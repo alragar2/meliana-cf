@@ -1,0 +1,28 @@
+/* Inter9 Soccer Academy - Estilos Modulares */
+/* Archivo principal que importa todos los módulos CSS */
+
+/* Variables y estilos base */
+@import url('./css/variables.css');
+@import url('./css/base.css');
+
+/* Componentes principales */
+@import url('./css/header.css');
+@import url('./css/hero.css');
+@import url('./css/gallery.css');
+@import url('./css/video-section.css');
+@import url('./css/pricing.css');
+@import url('./css/payment.css');
+@import url('./css/inscription.css');
+@import url('./css/inscription-form.css');
+@import url('./css/contact.css');
+@import url('./css/about.css');
+@import url('./css/schedule.css');
+@import url('./css/equipment.css');
+@import url('./css/faq.css');
+@import url('./css/privacy.css');
+@import url('./css/footer.css');
+
+/* Elementos compartidos */
+@import url('./css/buttons.css');
+@import url('./css/animations.css');
+@import url('./css/responsive.css');

@@ -1,0 +1,56 @@
+/* Registration Section */
+
+.registration {
+    padding: 80px 0;
+    background: var(--gradient-primary);
+    color: white;
+    text-align: center;
+}
+
+.registration .section-title {
+    color: white;
+    -webkit-text-fill-color: white;
+}
+
+.registration-content {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.registration-content > p {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    color: white;
+}
+
+.btn-registration {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: white;
+    color: var(--primary-color);
+    padding: 16px 32px;
+    border-radius: var(--border-radius);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.1rem;
+    transition: var(--transition);
+    box-shadow: var(--shadow-medium);
+    border: none;
+    cursor: pointer;
+    margin-bottom: 2rem;
+}
+
+.btn-registration:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-heavy);
+}
+
+.registration-note {
+    font-size: 0.9rem;
+    margin-top: 1rem;
+    opacity: 0.9;
+}
