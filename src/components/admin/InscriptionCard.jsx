@@ -1,5 +1,5 @@
 import React from 'react';
-import { horariosDisponibles, getMultipleScheduleDetails } from '../utils/horariosConfig';
+import { horariosDisponibles, getMultipleScheduleDetails } from '../../utils/horariosConfig';
 
 const InscriptionCard = ({ inscription, onInscriptionSelect }) => {
     const formatTimestamp = (timestamp) => {

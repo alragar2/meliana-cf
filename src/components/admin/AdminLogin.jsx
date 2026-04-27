@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { authService } from '../firebase/authService';
-import '../css/admin-login.css';
+import { authService } from '../../firebase/authService';
+import '../../css/admin-login.css';
 
 const AdminLogin = ({ onLogin }) => {
     const [credentials, setCredentials] = useState({

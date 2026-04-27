@@ -1,5 +1,5 @@
 import React from 'react';
-import { horariosDisponibles, getScheduleDetails, getMultipleScheduleDetails } from '../utils/horariosConfig';
+import { horariosDisponibles, getScheduleDetails, getMultipleScheduleDetails } from '../../utils/horariosConfig';
 
 const InscriptionModal = ({ 
     selectedInscription, 

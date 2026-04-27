@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { inscriptionService } from '../firebase/inscriptionService';
-import '../css/payment-manager.css';
+import { inscriptionService } from '../../firebase/inscriptionService';
+import '../../css/payment-manager.css';
 
 const PaymentManager = ({ inscription, onClose, onPaymentAdded }) => {
     // Determinar si el plan es por sesión

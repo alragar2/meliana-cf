@@ -1,5 +1,5 @@
 import React from 'react';
-import { horariosDisponibles } from '../utils/horariosConfig';
+import { horariosDisponibles } from '../../utils/horariosConfig';
 
 const FiltersPanel = ({ 
     showFilters, 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { authService } from '../firebase/authService';
+import { authService } from '../../firebase/authService';
 import AdminLogin from './AdminLogin';
 import AdminDashboard from './AdminDashboard';
 

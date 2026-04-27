@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { detectHostingPlatform } from '../utils/hostingDetector';
+import { detectHostingPlatform } from '../../utils/hostingDetector';
 
 const ProductionDebugger = () => {
     const [debugInfo, setDebugInfo] = useState(null);

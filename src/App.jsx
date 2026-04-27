@@ -3,20 +3,20 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './styles-modular.css';
 
 // Importar componentes
-import Header from './components/Header';
-import Hero from './components/Hero';
-import Gallery from './components/Gallery';
-import VideoSection from './components/VideoSection';
-import Pricing from './components/Pricing';
-import Inscription from './components/Inscription';
-import Contact from './components/Contact';
-import About from './components/About';
-import Schedule from './components/Schedule';
-import Equipment from './components/Equipment';
-import FAQ from './components/FAQ';
-import Privacy from './components/Privacy';
-import Footer from './components/Footer';
-import AdminPage from './components/AdminPage';
+import Header from './components/site/Header';
+import Hero from './components/site/Hero';
+import Gallery from './components/site/Gallery';
+import VideoSection from './components/site/VideoSection';
+import Pricing from './components/site/Pricing';
+import Inscription from './components/site/Inscription';
+import Contact from './components/site/Contact';
+import About from './components/site/About';
+import Schedule from './components/site/Schedule';
+import Equipment from './components/site/Equipment';
+import FAQ from './components/site/FAQ';
+import Privacy from './components/site/Privacy';
+import Footer from './components/site/Footer';
+import AdminPage from './components/admin/AdminPage';
 
 // Componente de la página principal
 const HomePage = () => (

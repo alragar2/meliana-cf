@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { inscriptionService } from '../firebase/inscriptionService';
-import { horariosDisponibles } from '../utils/horariosConfig';
+import { inscriptionService } from '../../firebase/inscriptionService';
+import { horariosDisponibles } from '../../utils/horariosConfig';
 import FormField from './FormField';
-import useInscriptionForm from '../hooks/useInscriptionForm';
+import useInscriptionForm from '../../hooks/useInscriptionForm';
 
 const InscriptionForm = ({ isVisible, onClose }) => {
 

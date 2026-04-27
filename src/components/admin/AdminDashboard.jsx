@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { inscriptionService } from '../firebase/inscriptionService';
-import { authService } from '../firebase/authService';
+import { inscriptionService } from '../../firebase/inscriptionService';
+import { authService } from '../../firebase/authService';
 import PaymentManager from './PaymentManager';
 import InscriptionCard from './InscriptionCard';
 import FiltersPanel from './FiltersPanel';
 import InscriptionModal from './InscriptionModal';
-import { horariosDisponibles } from '../utils/horariosConfig';
-import '../css/admin-dashboard.css';
+import { horariosDisponibles } from '../../utils/horariosConfig';
+import '../../css/admin-dashboard.css';
 
 const AdminDashboard = ({ user, onLogout }) => {
     const [inscriptions, setInscriptions] = useState([]);
