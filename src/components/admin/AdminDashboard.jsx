@@ -1,39 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { inscriptionService } from '../../firebase/inscriptionService';
 import { authService } from '../../firebase/authService';
-import PaymentManager from './PaymentManager';
-import InscriptionCard from './InscriptionCard';
 import FiltersPanel from './FiltersPanel';
-import InscriptionModal from './InscriptionModal';
-import { horariosDisponibles } from '../../utils/horariosConfig';
 import '../../css/admin-dashboard.css';
 
 const AdminDashboard = ({ user, onLogout }) => {
     const [inscriptions, setInscriptions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const [selectedInscription, setSelectedInscription] = useState(null);
-    const [selectedInscriptionPayments, setSelectedInscriptionPayments] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
-    const [showPaymentManager, setShowPaymentManager] = useState(false);
-    const [loadingPayments, setLoadingPayments] = useState(false);
     const [showFilters, setShowFilters] = useState(false);
     const [filters, setFilters] = useState({
-        horario: '',
-        edad: '',
-        demarcacion: '',
         sortBy: 'newest'
     });
 
     useEffect(() => {
         loadInscriptions();
     }, []);
-
-    // Función helper para obtener nombre del horario
-    const getScheduleName = (horarioId) => {
-        const horario = horariosDisponibles.find(h => h.id === horarioId);
-        return horario ? `${horario.name} - ${horario.location}` : horarioId;
-    };
 
     const loadInscriptions = async () => {
         try {
@@ -73,31 +56,16 @@ const AdminDashboard = ({ user, onLogout }) => {
 
     const filteredInscriptions = inscriptions.filter(inscription => {
         // Filtro de búsqueda por texto
-        const matchesSearch = inscription.nombreNino.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            inscription.apellidos.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            inscription.nombreTutor.toLowerCase().includes(searchTerm.toLowerCase());
+        const padreNombre = inscription.padre?.nombre || '';
+        const padreApellidos = inscription.padre?.apellidos || '';
         
-        // Filtro por horario
-        const matchesSchedule = !filters.horario || (() => {
-            if (!inscription.horarios) return false;
-            
-            if (Array.isArray(inscription.horarios)) {
-                // Si es array (nuevos datos), verificar si contiene el horario
-                return inscription.horarios.includes(filters.horario);
-            } else if (typeof inscription.horarios === 'string') {
-                // Si es string (datos antiguos), comparar directamente
-                return inscription.horarios === filters.horario;
-            }
-            return false;
-        })();
+        const matchesSearch = 
+            (inscription.nombreNino || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (inscription.apellidos || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+            padreNombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            padreApellidos.toLowerCase().includes(searchTerm.toLowerCase());
         
-        // Filtro por edad
-        const matchesAge = !filters.edad || inscription.edad.toString() === filters.edad;
-        
-        // Filtro por demarcación
-        const matchesDemarcacion = !filters.demarcacion || inscription.demarcacion === filters.demarcacion;
-        
-        return matchesSearch && matchesSchedule && matchesAge && matchesDemarcacion;
+        return matchesSearch;
     }).sort((a, b) => {
         // Aplicar ordenamiento según el filtro seleccionado
         switch (filters.sortBy) {
@@ -116,14 +84,6 @@ const AdminDashboard = ({ user, onLogout }) => {
         }
     });
 
-    const formatDate = (dateString) => {
-        try {
-            return new Date(dateString).toLocaleDateString('es-ES');
-        } catch {
-            return dateString;
-        }
-    };
-
     const formatTimestamp = (timestamp) => {
         try {
             let date;
@@ -139,38 +99,6 @@ const AdminDashboard = ({ user, onLogout }) => {
         }
     };
 
-    const handlePaymentAdded = () => {
-        // Recargar las inscripciones para mostrar los datos actualizados
-        loadInscriptions();
-        // Si hay una inscripción seleccionada, recargar sus pagos
-        if (selectedInscription) {
-            loadPaymentsForInscription(selectedInscription.id);
-        }
-    };
-
-    const loadPaymentsForInscription = async (inscriptionId) => {
-        setLoadingPayments(true);
-        try {
-            const result = await inscriptionService.getPaymentHistory(inscriptionId);
-            if (result.success) {
-                setSelectedInscriptionPayments(result.data);
-            } else {
-                console.error('Error al cargar pagos:', result.error);
-                setSelectedInscriptionPayments([]);
-            }
-        } catch (error) {
-            console.error('Error inesperado al cargar pagos:', error);
-            setSelectedInscriptionPayments([]);
-        } finally {
-            setLoadingPayments(false);
-        }
-    };
-
-    const handleInscriptionSelect = async (inscription) => {
-        setSelectedInscription(inscription);
-        await loadPaymentsForInscription(inscription.id);
-    };
-
     // Manejar cambios en filtros
     const handleFilterChange = (filterName, value) => {
         setFilters(prev => ({
@@ -182,9 +110,6 @@ const AdminDashboard = ({ user, onLogout }) => {
     // Limpiar filtros
     const clearFilters = () => {
         setFilters({
-            horario: '',
-            edad: '',
-            demarcacion: '',
             sortBy: 'newest'
         });
     };
@@ -264,7 +189,7 @@ const AdminDashboard = ({ user, onLogout }) => {
                                     <i className="fas fa-search"></i>
                                     <input
                                         type="text"
-                                        placeholder="Buscar por nombre del niño, apellidos o tutor..."
+                                        placeholder="Buscar por nombre del niño, apellidos o padre..."
                                         value={searchTerm}
                                         onChange={(e) => setSearchTerm(e.target.value)}
                                     />
@@ -276,28 +201,10 @@ const AdminDashboard = ({ user, onLogout }) => {
                                     <i className="fas fa-child"></i>
                                     Total: {filteredInscriptions.length} de {inscriptions.length} inscripciones
                                 </span>
-                                {filters.horario && (
-                                    <span className="stat-item">
-                                        <i className="fas fa-clock"></i>
-                                        Horario: {getScheduleName(filters.horario)}
-                                    </span>
-                                )}
-                                {filters.edad && (
-                                    <span className="stat-item">
-                                        <i className="fas fa-birthday-cake"></i>
-                                        Edad: {filters.edad} años
-                                    </span>
-                                )}
-                                {filters.demarcacion && (
-                                    <span className="stat-item">
-                                        <i className="fas fa-map-marker-alt"></i>
-                                        Demarcación: {filters.demarcacion}
-                                    </span>
-                                )}
                             </div>
                         </div>
 
-                        <div className="inscriptions-grid">
+                        <div className="inscriptions-table-container" style={{ overflowX: 'auto', marginTop: '20px' }}>
                             {filteredInscriptions.length === 0 ? (
                                 <div className="no-inscriptions">
                                     <i className="fas fa-inbox fa-3x"></i>
@@ -310,41 +217,37 @@ const AdminDashboard = ({ user, onLogout }) => {
                                     </p>
                                 </div>
                             ) : (
-                                filteredInscriptions.map((inscription) => (
-                                    <InscriptionCard
-                                        key={inscription.id}
-                                        inscription={inscription}
-                                        onInscriptionSelect={handleInscriptionSelect}
-                                    />
-                                ))
+                                <table className="inscriptions-table" style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                                    <thead>
+                                        <tr style={{ backgroundColor: '#f4f4f4', borderBottom: '2px solid #ddd' }}>
+                                            <th style={{ padding: '12px 8px' }}>Código</th>
+                                            <th style={{ padding: '12px 8px' }}>Nombre Niño/a</th>
+                                            <th style={{ padding: '12px 8px' }}>DNI</th>
+                                            <th style={{ padding: '12px 8px' }}>Fecha Nac.</th>
+                                            <th style={{ padding: '12px 8px' }}>Padre/Tutor</th>
+                                            <th style={{ padding: '12px 8px' }}>Teléfono</th>
+                                            <th style={{ padding: '12px 8px' }}>Fecha Inscripción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {filteredInscriptions.map((inscription) => (
+                                            <tr key={inscription.id} style={{ borderBottom: '1px solid #ddd' }}>
+                                                <td style={{ padding: '12px 8px' }}>{inscription.codigoInscripcion}</td>
+                                                <td style={{ padding: '12px 8px' }}>{inscription.nombreNino} {inscription.apellidos}</td>
+                                                <td style={{ padding: '12px 8px' }}>{inscription.dni}</td>
+                                                <td style={{ padding: '12px 8px' }}>{inscription.fechaNacimiento}</td>
+                                                <td style={{ padding: '12px 8px' }}>{inscription.padre?.nombre} {inscription.padre?.apellidos}</td>
+                                                <td style={{ padding: '12px 8px' }}>{inscription.telefono}</td>
+                                                <td style={{ padding: '12px 8px' }}>{formatTimestamp(inscription.createdAt)}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
                             )}
                         </div>
                     </div>
                 </div>
             </div>
-
-            {/* Modal para ver detalles completos */}
-            <InscriptionModal
-                selectedInscription={selectedInscription}
-                selectedInscriptionPayments={selectedInscriptionPayments}
-                loadingPayments={loadingPayments}
-                onClose={() => {
-                    setSelectedInscription(null);
-                    setSelectedInscriptionPayments([]);
-                }}
-                onAddPayment={() => setShowPaymentManager(true)}
-                formatDate={formatDate}
-                formatTimestamp={formatTimestamp}
-            />
-
-            {/* Payment Manager Modal */}
-            {showPaymentManager && selectedInscription && (
-                <PaymentManager
-                    inscription={selectedInscription}
-                    onClose={() => setShowPaymentManager(false)}
-                    onPaymentAdded={handlePaymentAdded}
-                />
-            )}
         </div>
     );
 };

@@ -1,5 +1,4 @@
 import React from 'react';
-import { horariosDisponibles, getMultipleScheduleDetails } from '../../utils/horariosConfig';
 
 const InscriptionCard = ({ inscription, onInscriptionSelect }) => {
     const formatTimestamp = (timestamp) => {
@@ -56,47 +55,31 @@ const InscriptionCard = ({ inscription, onInscriptionSelect }) => {
         >
             <div className="inscription-header">
                 <h3>{inscription.nombreNino} {inscription.apellidos}</h3>
-                <span className="inscription-age">{inscription.edad} años</span>
+                <span className="inscription-code">{inscription.codigoInscripcion}</span>
             </div>
             
             <div className="inscription-details">
-                <p><strong>Categoría:</strong> {inscription.categoria}</p>
-                <p><strong>Demarcación:</strong> {inscription.demarcacion}</p>
-                {inscription.planSeleccionado && (
-                    <p><strong>Plan:</strong> {inscription.planSeleccionado} - €{inscription.precioTotal || 'N/A'}</p>
-                )}
-                {inscription.horarios && (
-                    <div className="schedule-info">
-                        {(() => {
-                            const horarios = getMultipleScheduleDetails(inscription.horarios);
-                            const ubicaciones = [...new Set(horarios.map(h => h.location))];
-                            
-                            return (
-                                <>
-                                    <p><strong>Horarios:</strong></p>
-                                    <div className="horarios-list">
-                                        {horarios.map((horario, index) => (
-                                            <div key={index} className="horario-item">
-                                                <span className="horario-time">{horario.name}</span>
-                                                <span className="horario-location-small">{horario.location}</span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                    <p><strong>Ubicaciones:</strong> 
-                                        {ubicaciones.map((location, index) => (
-                                            <span key={location} className="location-badge">
-                                                <i className="fas fa-map-marker-alt"></i>
-                                                {location}
-                                            </span>
-                                        ))}
-                                    </p>
-                                </>
-                            );
-                        })()}
-                    </div>
-                )}
-                <p><strong>Tutor:</strong> {inscription.nombreTutor}</p>
+                <p><strong>DNI:</strong> {inscription.dni}</p>
+                <p><strong>Fecha de Nacimiento:</strong> {inscription.fechaNacimiento}</p>
+                <p><strong>Nacionalidad:</strong> {inscription.nacionalidad}</p>
+                <p><strong>Dirección:</strong> {inscription.direccion}, {inscription.poblacion}</p>
+                <p><strong>CP:</strong> {inscription.cp}</p>
                 <p><strong>Teléfono:</strong> {inscription.telefono}</p>
+                
+                <div className="padre-info">
+                    <h4>Información del Padre/Tutor</h4>
+                    <p><strong>Nombre:</strong> {inscription.padre?.nombre} {inscription.padre?.apellidos}</p>
+                    <p><strong>Parentesco:</strong> {inscription.padre?.parentesco}</p>
+                    <p><strong>Email:</strong> {inscription.padre?.email}</p>
+                    <p><strong>Teléfono:</strong> {inscription.padre?.telefono}</p>
+                    <p><strong>DNI:</strong> {inscription.padre?.dni}</p>
+                </div>
+
+                <div className="banco-info">
+                    <h4>Información Bancaria</h4>
+                    <p><strong>Banco:</strong> {inscription.banco?.nombre}</p>
+                    <p><strong>IBAN:</strong> {inscription.banco?.iban}</p>
+                </div>
             </div>
             
             {/* Información de Pagos */}

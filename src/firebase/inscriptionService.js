@@ -1,8 +1,8 @@
-import { collection, addDoc, getDocs, doc, updateDoc, deleteDoc, Timestamp } from 'firebase/firestore';
+import { collection, addDoc, getDocs, doc, setDoc, updateDoc, deleteDoc, Timestamp } from 'firebase/firestore';
 import { db } from './config';
 
 // Nombre de la colección en Firestore
-const COLLECTION_NAME = 'inscripciones';
+const COLLECTION_NAME = 'Jugadores26-27';
 
 // Servicio para manejar las inscripciones en Firebase
 export const inscriptionService = {
@@ -23,8 +23,43 @@ export const inscriptionService = {
         throw new Error('Base de datos Firestore no inicializada');
       }
 
+      // Obtener el número de inscripciones actuales para generar el ID
+      const allInscriptions = await getDocs(collection(db, COLLECTION_NAME));
+      const nextNumber = allInscriptions.size + 1;
+      const customId = `MCF-2026-${nextNumber}`;
+
+      // Agrupar datos del padre en un map
       const dataToSave = {
-        ...inscriptionData,
+        // Datos del Niño/a
+        nombreNino: inscriptionData.nombreNino,
+        apellidos: inscriptionData.apellidos,
+        direccion: inscriptionData.direccion,
+        poblacion: inscriptionData.poblacion,
+        dni: inscriptionData.dni,
+        cp: inscriptionData.cp,
+        fechaNacimiento: inscriptionData.fechaNacimiento,
+        telefono: inscriptionData.telefono,
+        nacionalidad: inscriptionData.nacionalidad,
+        lugarNacimiento: inscriptionData.lugarNacimiento,
+        
+        // Datos de los Padres/Tutores (mapa anidado)
+        padre: {
+          nombre: inscriptionData.nombrePadre,
+          apellidos: inscriptionData.apellidosPadre,
+          telefono: inscriptionData.telefonoPadre,
+          email: inscriptionData.correoPadre,
+          dni: inscriptionData.dniPadre,
+          parentesco: inscriptionData.parentesco
+        },
+        
+        // Datos Bancarios
+        banco: {
+          nombre: inscriptionData.nombreBanco,
+          iban: inscriptionData.iban
+        },
+        
+        // Metadata
+        codigoInscripcion: customId,
         createdAt: Timestamp.now(),
         fechaCreacion: Timestamp.now(),
         estado: 'pendiente' // Estados: pendiente, confirmada, rechazada
@@ -34,15 +69,16 @@ export const inscriptionService = {
       console.log('✍️ [Firebase Service] Enviando a Firestore...');
 
       // Intentar crear la colección y documento
-      const collectionRef = collection(db, COLLECTION_NAME);
-      console.log('📁 [Firebase Service] Referencia de colección creada:', collectionRef);
+      const docRef = doc(db, COLLECTION_NAME, customId);
       
-      const docRef = await addDoc(collectionRef, dataToSave);
+      await setDoc(docRef, dataToSave);
       
       console.log('✅ [Firebase Service] Inscripción guardada con ID:', docRef.id);
+      console.log('✅ [Firebase Service] Código de inscripción personalizado:', customId);
       return {
         success: true,
         id: docRef.id,
+        codigoInscripcion: customId,
         message: 'Inscripción enviada correctamente'
       };
     } catch (error) {
@@ -253,22 +289,30 @@ export const inscriptionService = {
   // Validar datos de inscripción antes de enviar
   validateInscriptionData(data) {
     const requiredFields = [
+      // Datos del Niño/a
       'nombreNino',
       'apellidos', 
-      'fechaNacimiento',
-      'edad',
-      'categoria',
-      'demarcacion',
-      'talla',
-      'lateralidad',
-      'nombreTutor',
-      'telefono',
       'direccion',
-      'ciudad',
-      'codigoPostal'
+      'poblacion',
+      'dni',
+      'cp',
+      'fechaNacimiento',
+      'telefono',
+      'nacionalidad',
+      'lugarNacimiento',
+      // Datos de los Padres/Tutores
+      'nombrePadre',
+      'apellidosPadre',
+      'telefonoPadre',
+      'correoPadre',
+      'dniPadre',
+      'parentesco',
+      // Datos Bancarios
+      'nombreBanco',
+      'iban'
     ];
 
-    const missingFields = requiredFields.filter(field => !data[field] || data[field].trim() === '');
+    const missingFields = requiredFields.filter(field => !data[field] || (typeof data[field] === 'string' && data[field].trim() === ''));
     
     if (missingFields.length > 0) {
       return {
@@ -277,37 +321,62 @@ export const inscriptionService = {
       };
     }
 
-    // Validar que se haya seleccionado al menos un horario
-    if (!data.horarios || !Array.isArray(data.horarios) || data.horarios.length === 0) {
-      return {
-        isValid: false,
-        message: 'Debes seleccionar al menos un horario'
-      };
-    }
-
-    // Validar edad
-    const edad = parseInt(data.edad);
-    if (isNaN(edad) || edad < 3 || edad > 17) {
-      return {
-        isValid: false,
-        message: 'La edad debe estar entre 3 y 17 años'
-      };
-    }
-
-    // Validar teléfono (formato básico)
+    // Validar teléfono del niño (formato básico)
     const phoneRegex = /^[+]?[0-9\s-()]{9,15}$/;
     if (!phoneRegex.test(data.telefono)) {
       return {
         isValid: false,
-        message: 'El formato del teléfono no es válido'
+        message: 'El formato del teléfono del niño no es válido'
       };
     }
 
-    // Validar checkboxes requeridos
-    if (!data.autorizacion || !data.politicaPrivacidad) {
+    // Validar teléfono del padre (formato básico)
+    if (!phoneRegex.test(data.telefonoPadre)) {
       return {
         isValid: false,
-        message: 'Debes aceptar las autorizaciones requeridas'
+        message: 'El formato del teléfono del padre no es válido'
+      };
+    }
+
+    // Validar email del padre
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(data.correoPadre)) {
+      return {
+        isValid: false,
+        message: 'El formato del correo electrónico no es válido'
+      };
+    }
+
+    // Validar DNI/NIE (formato básico - puede contener letras o números)
+    const dniRegex = /^[0-9XYZ]{1}[0-9]{7}[A-Z]{1}$/i;
+    if (!dniRegex.test(data.dni.replace(/[-\s]/g, ''))) {
+      return {
+        isValid: false,
+        message: 'El formato del DNI/NIE del niño no es válido'
+      };
+    }
+
+    if (!dniRegex.test(data.dniPadre.replace(/[-\s]/g, ''))) {
+      return {
+        isValid: false,
+        message: 'El formato del DNI/NIE del padre no es válido'
+      };
+    }
+
+    // Validar IBAN (formato básico)
+    const ibanRegex = /^[A-Z]{2}[0-9]{2}[A-Z0-9]{1,30}$/;
+    if (!ibanRegex.test(data.iban.replace(/[\s-]/g, ''))) {
+      return {
+        isValid: false,
+        message: 'El formato del IBAN no es válido'
+      };
+    }
+
+    // Validar código postal (solo números)
+    if (!/^\d{5}$/.test(data.cp)) {
+      return {
+        isValid: false,
+        message: 'El código postal debe contener 5 dígitos'
       };
     }
 

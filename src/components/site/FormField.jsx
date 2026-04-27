@@ -9,6 +9,9 @@ const FormField = ({
   touchedFields, 
   isFieldInvalid, 
   isFieldValid, 
+  onChange,
+  onBlur,
+  onFocus,
   children, 
 }) => {
   // Lógica de validación centralizada
@@ -26,11 +29,28 @@ const FormField = ({
     <div className="form-group">
       <label htmlFor={name}>{label}</label>
       {as === "select" ? (
-        <select id={name} name={name} className={className}>
+        <select 
+          id={name} 
+          name={name} 
+          className={className}
+          value={formData[name] || ''}
+          onChange={onChange}
+          onBlur={onBlur}
+          onFocus={onFocus}
+        >
           {children}
         </select>
       ) : (
-        <input id={name} name={name} type={type} className={className} />
+        <input 
+          id={name} 
+          name={name} 
+          type={type} 
+          className={className}
+          value={formData[name] || ''}
+          onChange={onChange}
+          onBlur={onBlur}
+          onFocus={onFocus}
+        />
       )}
     </div>
   );

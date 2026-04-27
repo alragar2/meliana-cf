@@ -15,7 +15,6 @@ const InscriptionForm = ({ isVisible, onClose }) => {
         isFieldInvalid,
         isFieldValid,
         handleInputChange,
-        handleHorarioChange,
         handleBlur,
         handleFocus,
         resetForm
@@ -78,6 +77,9 @@ const InscriptionForm = ({ isVisible, onClose }) => {
                             formData={formData}
                             touchedFields={touchedFields}
                             isFieldInvalid={isFieldInvalid}
+                            onChange={handleInputChange}
+                            onBlur={handleBlur}
+                            onFocus={handleFocus}
                         />
                         <FormField
                             label="Apellidos *"
@@ -86,6 +88,9 @@ const InscriptionForm = ({ isVisible, onClose }) => {
                             formData={formData}
                             touchedFields={touchedFields}
                             isFieldInvalid={isFieldInvalid}
+                            onChange={handleInputChange}
+                            onBlur={handleBlur}
+                            onFocus={handleFocus}
                         />
                     </div>
 
@@ -97,6 +102,9 @@ const InscriptionForm = ({ isVisible, onClose }) => {
                             formData={formData}
                             touchedFields={touchedFields}
                             isFieldInvalid={isFieldInvalid}
+                            onChange={handleInputChange}
+                            onBlur={handleBlur}
+                            onFocus={handleFocus}
                         />
                         <FormField
                             label="Población *"
@@ -105,6 +113,9 @@ const InscriptionForm = ({ isVisible, onClose }) => {
                             formData={formData}
                             touchedFields={touchedFields}
                             isFieldInvalid={isFieldInvalid}
+                            onChange={handleInputChange}
+                            onBlur={handleBlur}
+                            onFocus={handleFocus}
                         />
                     </div>
 
@@ -116,6 +127,9 @@ const InscriptionForm = ({ isVisible, onClose }) => {
                             formData={formData}
                             touchedFields={touchedFields}
                             isFieldInvalid={isFieldInvalid}
+                            onChange={handleInputChange}
+                            onBlur={handleBlur}
+                            onFocus={handleFocus}
                         />
                         <FormField
                             label="Codigo Postal *"
@@ -124,6 +138,9 @@ const InscriptionForm = ({ isVisible, onClose }) => {
                             formData={formData}
                             touchedFields={touchedFields}
                             isFieldInvalid={isFieldInvalid}
+                            onChange={handleInputChange}
+                            onBlur={handleBlur}
+                            onFocus={handleFocus}
                         />
                     </div>
 
@@ -135,6 +152,9 @@ const InscriptionForm = ({ isVisible, onClose }) => {
                             formData={formData}
                             touchedFields={touchedFields}
                             isFieldInvalid={isFieldInvalid}
+                            onChange={handleInputChange}
+                            onBlur={handleBlur}
+                            onFocus={handleFocus}
                         />
                         <FormField
                             label="Teléfono contacto *"
@@ -143,6 +163,9 @@ const InscriptionForm = ({ isVisible, onClose }) => {
                             formData={formData}
                             touchedFields={touchedFields}
                             isFieldInvalid={isFieldInvalid}
+                            onChange={handleInputChange}
+                            onBlur={handleBlur}
+                            onFocus={handleFocus}
                         />
                     </div>
 
@@ -154,6 +177,9 @@ const InscriptionForm = ({ isVisible, onClose }) => {
                             formData={formData}
                             touchedFields={touchedFields}
                             isFieldInvalid={isFieldInvalid}
+                            onChange={handleInputChange}
+                            onBlur={handleBlur}
+                            onFocus={handleFocus}
                         />
                         <FormField
                             label="Lugar de Nacimiento *"
@@ -162,6 +188,9 @@ const InscriptionForm = ({ isVisible, onClose }) => {
                             formData={formData}
                             touchedFields={touchedFields}
                             isFieldInvalid={isFieldInvalid}
+                            onChange={handleInputChange}
+                            onBlur={handleBlur}
+                            onFocus={handleFocus}
                         />
                     </div>
                 </div>
@@ -176,6 +205,9 @@ const InscriptionForm = ({ isVisible, onClose }) => {
                             formData={formData}
                             touchedFields={touchedFields}
                             isFieldInvalid={isFieldInvalid}
+                            onChange={handleInputChange}
+                            onBlur={handleBlur}
+                            onFocus={handleFocus}
                         />
                         <FormField
                             label="Apellidos *"
@@ -184,6 +216,9 @@ const InscriptionForm = ({ isVisible, onClose }) => {
                             formData={formData}
                             touchedFields={touchedFields}
                             isFieldInvalid={isFieldInvalid}
+                            onChange={handleInputChange}
+                            onBlur={handleBlur}
+                            onFocus={handleFocus}
                         />
                     </div>
 
@@ -195,6 +230,9 @@ const InscriptionForm = ({ isVisible, onClose }) => {
                             formData={formData}
                             touchedFields={touchedFields}
                             isFieldInvalid={isFieldInvalid}
+                            onChange={handleInputChange}
+                            onBlur={handleBlur}
+                            onFocus={handleFocus}
                         />
                         <FormField
                             label="Correo electrónico *"
@@ -203,6 +241,9 @@ const InscriptionForm = ({ isVisible, onClose }) => {
                             formData={formData}
                             touchedFields={touchedFields}
                             isFieldInvalid={isFieldInvalid}
+                            onChange={handleInputChange}
+                            onBlur={handleBlur}
+                            onFocus={handleFocus}
                         />
                     </div>
 
@@ -214,6 +255,9 @@ const InscriptionForm = ({ isVisible, onClose }) => {
                             formData={formData}
                             touchedFields={touchedFields}
                             isFieldInvalid={isFieldInvalid}
+                            onChange={handleInputChange}
+                            onBlur={handleBlur}
+                            onFocus={handleFocus}
                         />
                         <FormField
                             label="Parentesco *"
@@ -222,6 +266,9 @@ const InscriptionForm = ({ isVisible, onClose }) => {
                             formData={formData}
                             touchedFields={touchedFields}
                             isFieldInvalid={isFieldInvalid}
+                            onChange={handleInputChange}
+                            onBlur={handleBlur}
+                            onFocus={handleFocus}
                         />
                     </div>
                 </div>
@@ -236,6 +283,9 @@ const InscriptionForm = ({ isVisible, onClose }) => {
                             formData={formData}
                             touchedFields={touchedFields}
                             isFieldInvalid={isFieldInvalid}
+                            onChange={handleInputChange}
+                            onBlur={handleBlur}
+                            onFocus={handleFocus}
                         />
                         <FormField
                             label="IBAN *"
@@ -244,6 +294,9 @@ const InscriptionForm = ({ isVisible, onClose }) => {
                             formData={formData}
                             touchedFields={touchedFields}
                             isFieldInvalid={isFieldInvalid}
+                            onChange={handleInputChange}
+                            onBlur={handleBlur}
+                            onFocus={handleFocus}
                         />
                     </div>
                 </div>
