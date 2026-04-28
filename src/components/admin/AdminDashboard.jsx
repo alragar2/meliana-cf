@@ -2,29 +2,53 @@ import React, { useState, useEffect } from 'react';
 import { inscriptionService } from '../../firebase/inscriptionService';
 import { authService } from '../../firebase/authService';
 import FiltersPanel from './FiltersPanel';
+import DataTabs from './DataTabs';
 import '../../css/admin-dashboard.css';
+import { handleExportExcel } from './DataTabs'; 
 
 const AdminDashboard = ({ user, onLogout }) => {
     const [inscriptions, setInscriptions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [activeTab, setActiveTab] = useState('player'); // 'player', 'parent', 'payment
     const [searchTerm, setSearchTerm] = useState('');
     const [showFilters, setShowFilters] = useState(false);
     const [filters, setFilters] = useState({
-        sortBy: 'newest'
+        sortBy: 'newest',
+        categoria: '',
+        estado: '',
+        poblacion: '',
+        fechaDesde: '',
+        fechaHasta: ''
     });
 
     useEffect(() => {
         loadInscriptions();
     }, []);
 
+    const calcularCategoria = (fechaNacimiento) => {
+        if (!fechaNacimiento) return '-';
+        const year = parseInt(fechaNacimiento.substring(0, 4));
+        if (isNaN(year)) return '-';
+
+        if (year === 2020 || year === 2021) return 'Querubín';
+        if (year === 2018 || year === 2019) return 'Pre-Benjamín';
+        if (year === 2016 || year === 2017) return 'Benjamín';
+        if (year === 2014 || year === 2015) return 'Alevín';
+        if (year === 2012 || year === 2013) return 'Infantil';
+        if (year === 2010 || year === 2011) return 'Cadete';
+        if (year >= 2007 && year <= 2009) return 'Juvenil';
+
+        return 'Amateur';
+    };
+
     const loadInscriptions = async () => {
         try {
             setLoading(true);
             setError('');
-            
+
             const result = await inscriptionService.getAllInscriptions();
-            
+
             if (result.success) {
                 setInscriptions(result.data);
                 setError('');
@@ -58,14 +82,40 @@ const AdminDashboard = ({ user, onLogout }) => {
         // Filtro de búsqueda por texto
         const padreNombre = inscription.padre?.nombre || '';
         const padreApellidos = inscription.padre?.apellidos || '';
-        
-        const matchesSearch = 
+
+        const matchesSearch =
             (inscription.nombreNino || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
             (inscription.apellidos || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
             padreNombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
             padreApellidos.toLowerCase().includes(searchTerm.toLowerCase());
-        
-        return matchesSearch;
+
+        // Filtro por categoría
+        const matchesCategoria = !filters.categoria || calcularCategoria(inscription.fechaNacimiento) === filters.categoria;
+
+        // Filtro por estado
+        const matchesEstado = !filters.estado || inscription.estado === filters.estado;
+
+        // Filtro por población
+        const matchesPoblacion = !filters.poblacion || inscription.poblacion === filters.poblacion;
+
+        // Filtro por fecha desde
+        let matchesFechaDesde = true;
+        if (filters.fechaDesde) {
+            const fechaInscripcion = inscription.createdAt?.seconds ? new Date(inscription.createdAt.seconds * 1000) : new Date(inscription.fechaCreacion?.seconds * 1000 || 0);
+            const fechaFiltro = new Date(filters.fechaDesde);
+            matchesFechaDesde = fechaInscripcion >= fechaFiltro;
+        }
+
+        // Filtro por fecha hasta
+        let matchesFechaHasta = true;
+        if (filters.fechaHasta) {
+            const fechaInscripcion = inscription.createdAt?.seconds ? new Date(inscription.createdAt.seconds * 1000) : new Date(inscription.fechaCreacion?.seconds * 1000 || 0);
+            const fechaFiltro = new Date(filters.fechaHasta);
+            fechaFiltro.setHours(23, 59, 59, 999); // Fin del día
+            matchesFechaHasta = fechaInscripcion <= fechaFiltro;
+        }
+
+        return matchesSearch && matchesCategoria && matchesEstado && matchesPoblacion && matchesFechaDesde && matchesFechaHasta;
     }).sort((a, b) => {
         // Aplicar ordenamiento según el filtro seleccionado
         switch (filters.sortBy) {
@@ -74,7 +124,7 @@ const AdminDashboard = ({ user, onLogout }) => {
                 const aDateOld = a.createdAt?.seconds || a.fechaCreacion?.seconds || 0;
                 const bDateOld = b.createdAt?.seconds || b.fechaCreacion?.seconds || 0;
                 return aDateOld - bDateOld;
-            
+
             case 'newest':
             default:
                 // Más recientes primero (por defecto)
@@ -110,7 +160,12 @@ const AdminDashboard = ({ user, onLogout }) => {
     // Limpiar filtros
     const clearFilters = () => {
         setFilters({
-            sortBy: 'newest'
+            sortBy: 'newest',
+            categoria: '',
+            estado: '',
+            poblacion: '',
+            fechaDesde: '',
+            fechaHasta: ''
         });
     };
 
@@ -177,26 +232,34 @@ const AdminDashboard = ({ user, onLogout }) => {
                     <div className="main-content">
                         <div className="admin-controls">
                             <div className="controls-row">
-                                <button 
+                                <button
                                     className="btn-toggle-filters"
                                     onClick={toggleFilters}
                                 >
                                     <i className="fas fa-filter"></i>
                                     {showFilters ? 'Ocultar Filtros' : 'Mostrar Filtros'}
                                 </button>
-                                
+
                                 <div className="search-box">
                                     <i className="fas fa-search"></i>
                                     <input
                                         type="text"
-                                        placeholder="Buscar por nombre del niño, apellidos o padre..."
+                                        placeholder="Buscar"
                                         value={searchTerm}
                                         onChange={(e) => setSearchTerm(e.target.value)}
                                     />
                                 </div>
                             </div>
-                            
+
                             <div className="stats">
+                                <button
+                                    className="btn-export-excel"
+                                    onClick={() => handleExportExcel(filteredInscriptions, activeTab, calcularCategoria, formatTimestamp)}
+                                    title="Descargar como Excel"
+                                >
+                                    <i className="fas fa-file-excel"></i>
+                                    <span className="export-text">Exportar Excel</span>
+                                </button>
                                 <span className="stat-item">
                                     <i className="fas fa-child"></i>
                                     Total: {filteredInscriptions.length} de {inscriptions.length} inscripciones
@@ -205,45 +268,13 @@ const AdminDashboard = ({ user, onLogout }) => {
                         </div>
 
                         <div className="inscriptions-table-container" style={{ overflowX: 'auto', marginTop: '20px' }}>
-                            {filteredInscriptions.length === 0 ? (
-                                <div className="no-inscriptions">
-                                    <i className="fas fa-inbox fa-3x"></i>
-                                    <h3>No hay inscripciones</h3>
-                                    <p>
-                                        {searchTerm || filters.horario || filters.edad || filters.demarcacion
-                                            ? 'No se encontraron inscripciones que coincidan con los filtros aplicados' 
-                                            : 'Aún no se han recibido inscripciones para el campus'
-                                        }
-                                    </p>
-                                </div>
-                            ) : (
-                                <table className="inscriptions-table" style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-                                    <thead>
-                                        <tr style={{ backgroundColor: '#f4f4f4', borderBottom: '2px solid #ddd' }}>
-                                            <th style={{ padding: '12px 8px' }}>Código</th>
-                                            <th style={{ padding: '12px 8px' }}>Nombre Niño/a</th>
-                                            <th style={{ padding: '12px 8px' }}>DNI</th>
-                                            <th style={{ padding: '12px 8px' }}>Fecha Nac.</th>
-                                            <th style={{ padding: '12px 8px' }}>Padre/Tutor</th>
-                                            <th style={{ padding: '12px 8px' }}>Teléfono</th>
-                                            <th style={{ padding: '12px 8px' }}>Fecha Inscripción</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {filteredInscriptions.map((inscription) => (
-                                            <tr key={inscription.id} style={{ borderBottom: '1px solid #ddd' }}>
-                                                <td style={{ padding: '12px 8px' }}>{inscription.codigoInscripcion}</td>
-                                                <td style={{ padding: '12px 8px' }}>{inscription.nombreNino} {inscription.apellidos}</td>
-                                                <td style={{ padding: '12px 8px' }}>{inscription.dni}</td>
-                                                <td style={{ padding: '12px 8px' }}>{inscription.fechaNacimiento}</td>
-                                                <td style={{ padding: '12px 8px' }}>{inscription.padre?.nombre} {inscription.padre?.apellidos}</td>
-                                                <td style={{ padding: '12px 8px' }}>{inscription.telefono}</td>
-                                                <td style={{ padding: '12px 8px' }}>{formatTimestamp(inscription.createdAt)}</td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            )}
+                            <DataTabs
+                                activeTab={activeTab}
+                                onTabChange={setActiveTab}
+                                filteredInscriptions={filteredInscriptions}
+                                formatTimestamp={formatTimestamp}
+                                calcularCategoria={calcularCategoria}
+                            />
                         </div>
                     </div>
                 </div>

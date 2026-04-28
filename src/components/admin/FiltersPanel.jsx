@@ -1,5 +1,4 @@
 import React from 'react';
-import { horariosDisponibles } from '../../utils/horariosConfig';
 
 const FiltersPanel = ({ 
     showFilters, 
@@ -9,44 +8,42 @@ const FiltersPanel = ({
     onClearFilters, 
     onToggleFilters 
 }) => {
-    // Obtener horarios únicos de las inscripciones
-    const getUniqueSchedules = () => {
-        const allScheduleIds = [];
-        
+    // Obtener categorías únicas basadas en fecha de nacimiento
+    const getUniqueCategories = () => {
+        const categories = [];
         inscriptions.forEach(inscription => {
-            if (inscription.horarios) {
-                if (Array.isArray(inscription.horarios)) {
-                    // Si es array (nuevos datos), agregar todos los IDs
-                    allScheduleIds.push(...inscription.horarios);
-                } else if (typeof inscription.horarios === 'string') {
-                    // Si es string (datos antiguos), agregar el ID único
-                    allScheduleIds.push(inscription.horarios);
+            if (inscription.fechaNacimiento) {
+                const year = parseInt(inscription.fechaNacimiento.substring(0, 4));
+                if (!isNaN(year)) {
+                    let category = '';
+                    if (year === 2020 || year === 2021) category = 'Querubín';
+                    else if (year === 2018 || year === 2019) category = 'Pre-Benjamín';
+                    else if (year === 2016 || year === 2017) category = 'Benjamín';
+                    else if (year === 2014 || year === 2015) category = 'Alevín';
+                    else if (year === 2012 || year === 2013) category = 'Infantil';
+                    else if (year === 2010 || year === 2011) category = 'Cadete';
+                    else if (year >= 2007 && year <= 2009) category = 'Juvenil';
+                    else category = 'Amateur';
+                    
+                    if (!categories.includes(category)) {
+                        categories.push(category);
+                    }
                 }
             }
         });
-
-        // Obtener IDs únicos y mapear a objetos completos
-        const uniqueIds = [...new Set(allScheduleIds)];
-        return uniqueIds
-            .map(id => horariosDisponibles.find(h => h.id === id))
-            .filter(Boolean) // Filtrar horarios no encontrados
-            .sort((a, b) => a.name.localeCompare(b.name));
+        return categories.sort();
     };
 
-    // Obtener edades únicas para el filtro (de 6 a 17 años)
-    const getUniqueAges = () => {
-        // Crear array con todas las edades de 6 a 17 años
-        const allAges = [];
-        for (let age = 6; age <= 17; age++) {
-            allAges.push(age);
-        }
-        return allAges;
+    // Obtener estados únicos
+    const getUniqueStatuses = () => {
+        const statuses = inscriptions.map(inscription => inscription.estado);
+        return [...new Set(statuses)].filter(Boolean).sort();
     };
 
-    // Obtener demarcación
-    const getDemarcation = () => {
-        const demarcation = inscriptions.map(inscription => inscription.demarcacion);
-        return [...new Set(demarcation)].filter(Boolean).sort();
+    // Obtener poblaciones únicas
+    const getUniqueLocations = () => {
+        const locations = inscriptions.map(inscription => inscription.poblacion);
+        return [...new Set(locations)].filter(Boolean).sort();
     };
 
     // Opciones de ordenamiento
@@ -94,54 +91,76 @@ const FiltersPanel = ({
                 </div>
                 <div className="filters-content">
                     <div className="filter-group">
-                        <label htmlFor="horario-filter">Horario</label>
+                        <label htmlFor="categoria-filter">Categoría</label>
                         <select
-                            id="horario-filter"
+                            id="categoria-filter"
                             className="filter-select"
-                            value={filters.horario}
-                            onChange={(e) => onFilterChange('horario', e.target.value)}
+                            value={filters.categoria || ''}
+                            onChange={(e) => onFilterChange('categoria', e.target.value)}
                         >
-                            <option value="">Todos los horarios</option>
-                            {getUniqueSchedules().map(horario => (
-                                <option key={horario.id} value={horario.id}>
-                                    {horario.name} - {horario.location}
+                            <option value="">Todas las categorías</option>
+                            {getUniqueCategories().map(categoria => (
+                                <option key={categoria} value={categoria}>
+                                    {categoria}
                                 </option>
                             ))}
                         </select>
                     </div>
 
                     <div className="filter-group">
-                        <label htmlFor="edad-filter">Edad</label>
+                        <label htmlFor="estado-filter">Estado</label>
                         <select
-                            id="edad-filter"
+                            id="estado-filter"
                             className="filter-select"
-                            value={filters.edad}
-                            onChange={(e) => onFilterChange('edad', e.target.value)}
+                            value={filters.estado || ''}
+                            onChange={(e) => onFilterChange('estado', e.target.value)}
                         >
-                            <option value="">Todas las edades</option>
-                            {getUniqueAges().map(edad => (
-                                <option key={edad} value={edad}>
-                                    {edad} años
+                            <option value="">Todos los estados</option>
+                            {getUniqueStatuses().map(estado => (
+                                <option key={estado} value={estado}>
+                                    {estado.charAt(0).toUpperCase() + estado.slice(1)}
                                 </option>
                             ))}
                         </select>
                     </div>
 
                     <div className="filter-group">
-                        <label htmlFor="demarcacion-filter">Demarcación</label>
+                        <label htmlFor="poblacion-filter">Población</label>
                         <select
-                            id="demarcacion-filter"
+                            id="poblacion-filter"
                             className="filter-select"
-                            value={filters.demarcacion}
-                            onChange={(e) => onFilterChange('demarcacion', e.target.value)}
+                            value={filters.poblacion || ''}
+                            onChange={(e) => onFilterChange('poblacion', e.target.value)}
                         >
-                            <option value="">Todas las demarcaciones</option>
-                            {getDemarcation().map(demarcacion => (
-                                <option key={demarcacion} value={demarcacion}>
-                                    {demarcacion}
+                            <option value="">Todas las poblaciones</option>
+                            {getUniqueLocations().map(poblacion => (
+                                <option key={poblacion} value={poblacion}>
+                                    {poblacion}
                                 </option>
                             ))}
                         </select>
+                    </div>
+
+                    <div className="filter-group">
+                        <label htmlFor="fecha-desde-filter">Fecha desde</label>
+                        <input
+                            type="date"
+                            id="fecha-desde-filter"
+                            className="filter-input"
+                            value={filters.fechaDesde || ''}
+                            onChange={(e) => onFilterChange('fechaDesde', e.target.value)}
+                        />
+                    </div>
+
+                    <div className="filter-group">
+                        <label htmlFor="fecha-hasta-filter">Fecha hasta</label>
+                        <input
+                            type="date"
+                            id="fecha-hasta-filter"
+                            className="filter-input"
+                            value={filters.fechaHasta || ''}
+                            onChange={(e) => onFilterChange('fechaHasta', e.target.value)}
+                        />
                     </div>
 
                     <div className="filter-group">
