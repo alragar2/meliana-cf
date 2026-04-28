@@ -1,22 +1,41 @@
 import React from 'react';
-import { exportToExcel, prepareDataForExport } from '../../utils/excelExporter';
+import { exportToExcel, prepareDataForExport, exportToExcelByCategories } from '../../utils/excelExporter';
 
 export const handleExportExcel = (filteredInscriptions, activeTab, calcularCategoria, formatTimestamp) => {
+    if (filteredInscriptions.length === 0) {
+        alert('No hay datos para exportar');
+        return;
+    }
+
+    const tabNames = { 'player': 'Jugadores', 'parent': 'Padres', 'payment': 'Pagos' };
+
+    // CASO ESPECIAL: Si es la pestaña de JUGADORES, agrupamos por categorías
+    if (activeTab === 'player') {
+        const dataAgrupada = {};
+
+        filteredInscriptions.forEach(inscription => {
+            const cat = calcularCategoria(inscription.fechaNacimiento) || 'Sin Categoría';
+            if (!dataAgrupada[cat]) dataAgrupada[cat] = [];
+
+            dataAgrupada[cat].push({
+                'Código': inscription.codigoInscripcion,
+                'Nombre': inscription.nombreNino,
+                'Apellidos': inscription.apellidos,
+                'DNI': inscription.dni,
+                'Fecha Nacimiento': inscription.fechaNacimiento,
+                'Categoría': cat,
+                'Fecha Inscripción': formatTimestamp(inscription.createdAt)
+            });
+        });
+
+        exportToExcelByCategories(dataAgrupada, `Inscripciones_Jugadores_Por_Categoria`);
+    } 
+    // CASO NORMAL: Para Padres y Pagos, usamos la lógica anterior
+    else {
         const data = prepareDataForExport(filteredInscriptions, activeTab, calcularCategoria, formatTimestamp);
-        
-        if (data.length === 0) {
-            alert('No hay datos para exportar');
-            return;
-        }
-
-        const tabNames = {
-            'player': 'Jugadores',
-            'parent': 'Padres',
-            'payment': 'Pagos'
-        };
-
-        exportToExcel(data, `inscripciones_${tabNames[activeTab]}`);
-    };
+        exportToExcel(data, `Inscripciones_${tabNames[activeTab]}`);
+    }
+};
     
 const DataTabs = ({ activeTab, onTabChange, filteredInscriptions, formatTimestamp, calcularCategoria }) => {
     const tabs = [

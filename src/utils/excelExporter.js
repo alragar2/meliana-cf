@@ -72,3 +72,28 @@ export const prepareDataForExport = (filteredInscriptions, activeTab, calcularCa
             return [];
     }
 };
+
+export const exportToExcelByCategories = (groupedData, fileName = 'inscripciones_por_categoria') => {
+    import('xlsx').then(XLSX => {
+        const wb = XLSX.utils.book_new();
+
+        // Iteramos sobre cada categoría (cada pestaña)
+        Object.entries(groupedData).forEach(([categoryName, data]) => {
+            if (data.length > 0) {
+                const ws = XLSX.utils.json_to_sheet(data);
+                
+                // Ajustar anchos de columna (opcional pero recomendado)
+                const colWidths = Object.keys(data[0]).map(key => ({
+                    wch: Math.min(Math.max(key.length, ...data.map(item => String(item[key] || '').length)) + 2, 50)
+                }));
+                ws['!cols'] = colWidths;
+
+                // Añadir la hoja al libro con el nombre de la categoría
+                XLSX.utils.book_append_sheet(wb, ws, categoryName.substring(0, 64)); // Excel limita a 64 caracteres
+            }
+        });
+
+        const timestamp = new Date().toLocaleString('es-ES').replace(/[\/:]/g, '-');
+        XLSX.writeFile(wb, `${fileName}_${timestamp}.xlsx`);
+    });
+};
