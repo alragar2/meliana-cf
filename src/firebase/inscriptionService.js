@@ -1,8 +1,11 @@
 import { collection, addDoc, getDocs, doc, setDoc, updateDoc, deleteDoc, Timestamp } from 'firebase/firestore';
 import { db } from './config';
-
-// Nombre de la colección en Firestore
-const COLLECTION_NAME = 'Jugadores26-27';
+import { 
+  COLLECTION_NAME, 
+  createInscriptionDataModel, 
+  REQUIRED_INSCRIPTION_FIELDS, 
+  VALIDATION_PATTERNS 
+} from '../models/inscriptionModel';
 
 // Servicio para manejar las inscripciones en Firebase
 export const inscriptionService = {
@@ -28,42 +31,7 @@ export const inscriptionService = {
       const nextNumber = allInscriptions.size + 1;
       const customId = `MCF-2026-${nextNumber}`;
 
-      // Agrupar datos del padre en un map
-      const dataToSave = {
-        // Datos del Niño/a
-        nombreNino: inscriptionData.nombreNino,
-        apellidos: inscriptionData.apellidos,
-        direccion: inscriptionData.direccion,
-        poblacion: inscriptionData.poblacion,
-        dni: inscriptionData.dni,
-        cp: inscriptionData.cp,
-        fechaNacimiento: inscriptionData.fechaNacimiento,
-        telefono: inscriptionData.telefono,
-        nacionalidad: inscriptionData.nacionalidad,
-        lugarNacimiento: inscriptionData.lugarNacimiento,
-        
-        // Datos de los Padres/Tutores (mapa anidado)
-        padre: {
-          nombre: inscriptionData.nombrePadre,
-          apellidos: inscriptionData.apellidosPadre,
-          telefono: inscriptionData.telefonoPadre,
-          email: inscriptionData.correoPadre,
-          dni: inscriptionData.dniPadre,
-          parentesco: inscriptionData.parentesco
-        },
-        
-        // Datos Bancarios
-        banco: {
-          nombre: inscriptionData.nombreBanco,
-          iban: inscriptionData.iban
-        },
-        
-        // Metadata
-        codigoInscripcion: customId,
-        createdAt: Timestamp.now(),
-        fechaCreacion: Timestamp.now(),
-        estado: 'pendiente' // Estados: pendiente, confirmada, rechazada
-      };
+      const dataToSave = createInscriptionDataModel(inscriptionData, customId);
 
       console.log('📝 [Firebase Service] Datos finales a guardar:', dataToSave);
       console.log('✍️ [Firebase Service] Enviando a Firestore...');
@@ -288,31 +256,7 @@ export const inscriptionService = {
 
   // Validar datos de inscripción antes de enviar
   validateInscriptionData(data) {
-    const requiredFields = [
-      // Datos del Niño/a
-      'nombreNino',
-      'apellidos', 
-      'direccion',
-      'poblacion',
-      'dni',
-      'cp',
-      'fechaNacimiento',
-      'telefono',
-      'nacionalidad',
-      'lugarNacimiento',
-      // Datos de los Padres/Tutores
-      'nombrePadre',
-      'apellidosPadre',
-      'telefonoPadre',
-      'correoPadre',
-      'dniPadre',
-      'parentesco',
-      // Datos Bancarios
-      'nombreBanco',
-      'iban'
-    ];
-
-    const missingFields = requiredFields.filter(field => !data[field] || (typeof data[field] === 'string' && data[field].trim() === ''));
+    const missingFields = REQUIRED_INSCRIPTION_FIELDS.filter(field => !data[field] || (typeof data[field] === 'string' && data[field].trim() === ''));
     
     if (missingFields.length > 0) {
       return {
@@ -321,17 +265,16 @@ export const inscriptionService = {
       };
     }
 
-    // Validar teléfono del niño (formato básico)
-    const phoneRegex = /^[+]?[0-9\s-()]{9,15}$/;
-    if (!phoneRegex.test(data.telefono)) {
+    // Validar teléfono del niño
+    if (!VALIDATION_PATTERNS.phone.test(data.telefono)) {
       return {
         isValid: false,
         message: 'El formato del teléfono del niño no es válido'
       };
     }
 
-    // Validar teléfono del padre (formato básico)
-    if (!phoneRegex.test(data.telefonoPadre)) {
+    // Validar teléfono del padre
+    if (!VALIDATION_PATTERNS.phone.test(data.telefonoPadre)) {
       return {
         isValid: false,
         message: 'El formato del teléfono del padre no es válido'
@@ -339,41 +282,39 @@ export const inscriptionService = {
     }
 
     // Validar email del padre
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(data.correoPadre)) {
+    if (!VALIDATION_PATTERNS.email.test(data.correoPadre)) {
       return {
         isValid: false,
         message: 'El formato del correo electrónico no es válido'
       };
     }
 
-    // Validar DNI/NIE (formato básico - puede contener letras o números)
-    const dniRegex = /^[0-9XYZ]{1}[0-9]{7}[A-Z]{1}$/i;
-    if (!dniRegex.test(data.dni.replace(/[-\s]/g, ''))) {
+    // Validar DNI/NIE del niño
+    if (!VALIDATION_PATTERNS.dni.test(data.dni.replace(/[-\s]/g, ''))) {
       return {
         isValid: false,
         message: 'El formato del DNI/NIE del niño no es válido'
       };
     }
 
-    if (!dniRegex.test(data.dniPadre.replace(/[-\s]/g, ''))) {
+    // Validar DNI/NIE del padre
+    if (!VALIDATION_PATTERNS.dni.test(data.dniPadre.replace(/[-\s]/g, ''))) {
       return {
         isValid: false,
         message: 'El formato del DNI/NIE del padre no es válido'
       };
     }
 
-    // Validar IBAN (formato básico)
-    const ibanRegex = /^[A-Z]{2}[0-9]{2}[A-Z0-9]{1,30}$/;
-    if (!ibanRegex.test(data.iban.replace(/[\s-]/g, ''))) {
+    // Validar IBAN
+    if (!VALIDATION_PATTERNS.iban.test(data.iban.replace(/[\s-]/g, ''))) {
       return {
         isValid: false,
         message: 'El formato del IBAN no es válido'
       };
     }
 
-    // Validar código postal (solo números)
-    if (!/^\d{5}$/.test(data.cp)) {
+    // Validar código postal
+    if (!VALIDATION_PATTERNS.postalCode.test(data.cp)) {
       return {
         isValid: false,
         message: 'El código postal debe contener 5 dígitos'

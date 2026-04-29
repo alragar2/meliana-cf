@@ -11,12 +11,15 @@ const defaultInitialForm = {
     telefono: '',
     nacionalidad: '',
     lugarNacimiento: '',
+    loteria: false,
+    // Datos de los Padres/Tutores
     nombrePadre: '',
     apellidosPadre: '',
     telefonoPadre: '',
     correoPadre: '',
     dniPadre: '',
     parentesco: '',
+    // Datos Bancarios
     nombreBanco: '',
     iban: ''
 };

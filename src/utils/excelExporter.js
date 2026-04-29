@@ -67,6 +67,16 @@ export const prepareDataForExport = (filteredInscriptions, activeTab, calcularCa
                 'IBAN': inscription.banco?.iban || '-',
                 'Fecha Inscripción': formatTimestamp(inscription.createdAt)
             }));
+        case 'personal-data-player':
+            return filteredInscriptions.map(inscription => ({
+                'Código': inscription.codigoInscripcion,
+                'Nombre': inscription.nombreNino,
+                'Apellidos': inscription.apellidos,
+                'DNI': inscription.dni,
+                'Fecha Nacimiento': inscription.fechaNacimiento,
+                'Categoría': calcularCategoria(inscription.fechaNacimiento),
+                'Fecha Inscripción': formatTimestamp(inscription.createdAt)
+            }));
 
         default:
             return [];
@@ -74,19 +84,35 @@ export const prepareDataForExport = (filteredInscriptions, activeTab, calcularCa
 };
 
 export const exportToExcelByCategories = (groupedData, fileName = 'inscripciones_por_categoria') => {
-    import('xlsx').then(XLSX => {
+    import('xlsx-js-style').then(XLSX => {
         const wb = XLSX.utils.book_new();
 
         // Iteramos sobre cada categoría (cada pestaña)
         Object.entries(groupedData).forEach(([categoryName, data]) => {
             if (data.length > 0) {
-                const ws = XLSX.utils.json_to_sheet(data);
+                const headers = Object.keys(data[0]);
+
+                const titleStyle = {
+                    fill: { fgColor: { rgb: "FF9900" } }, // Naranja
+                    font: { bold: true, sz: 16, color: { rgb: "FFFFFF" } }, // Tamaño 16, Blanco
+                    alignment: { horizontal: "center", vertical: "center" }
+                };
+
+                const aoa = [
+                    '',
+                    ['', categoryName], 
+                    ['', ...headers],
+                    ...data.map(item => ['', ...Object.values(item)])
+                ];
+                const ws = XLSX.utils.aoa_to_sheet(aoa); // Convertir datos a hoja de Excel
                 
                 // Ajustar anchos de columna (opcional pero recomendado)
-                const colWidths = Object.keys(data[0]).map(key => ({
+                const dataColWidths = headers.map(key => ({
                     wch: Math.min(Math.max(key.length, ...data.map(item => String(item[key] || '').length)) + 2, 50)
                 }));
-                ws['!cols'] = colWidths;
+                ws['!cols'] = [{ wch: 5 }, ...dataColWidths];
+
+                XLSX.utils.sheet_add_aoa(ws, [[ { v: categoryName.toUpperCase(), s: titleStyle } ]], { origin: "B2" });
 
                 // Añadir la hoja al libro con el nombre de la categoría
                 XLSX.utils.book_append_sheet(wb, ws, categoryName.substring(0, 64)); // Excel limita a 64 caracteres

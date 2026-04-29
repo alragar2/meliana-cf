@@ -1,16 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { inscriptionService } from '../../firebase/inscriptionService';
+import React, { useState } from 'react';
 import { authService } from '../../firebase/authService';
+import useInscriptions from '../../hooks/useInscriptions';
 import FiltersPanel from './FiltersPanel';
 import DataTabs from './DataTabs';
 import '../../css/admin-dashboard.css';
 import { handleExportExcel } from './DataTabs'; 
 
 const AdminDashboard = ({ user, onLogout }) => {
-    const [inscriptions, setInscriptions] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
-    const [activeTab, setActiveTab] = useState('player'); // 'player', 'parent', 'payment
+    const { inscriptions, loading, error, loadInscriptions, filterByDateRange, getPoblaciones } = useInscriptions(true);
+    
+    const [activeTab, setActiveTab] = useState('player');
     const [searchTerm, setSearchTerm] = useState('');
     const [showFilters, setShowFilters] = useState(false);
     const [filters, setFilters] = useState({
@@ -22,48 +21,22 @@ const AdminDashboard = ({ user, onLogout }) => {
         fechaHasta: ''
     });
 
-    useEffect(() => {
-        loadInscriptions();
-    }, []);
-
     const calcularCategoria = (fechaNacimiento) => {
         if (!fechaNacimiento) return '-';
         const year = parseInt(fechaNacimiento.substring(0, 4));
         if (isNaN(year)) return '-';
 
-        if (year === 2020 || year === 2021) return 'Querubín';
-        if (year === 2018 || year === 2019) return 'Pre-Benjamín';
-        if (year === 2016 || year === 2017) return 'Benjamín';
-        if (year === 2014 || year === 2015) return 'Alevín';
-        if (year === 2012 || year === 2013) return 'Infantil';
-        if (year === 2010 || year === 2011) return 'Cadete';
-        if (year >= 2007 && year <= 2009) return 'Juvenil';
+        if (year === 2021 || year === 2022) return 'QUERUBÍN';
+        if (year === 2020 || year === 2019) return 'PREBE';
+        if (year === 2018) return 'BENJAMÍN 1 AÑO'; 
+        if (year === 2017) return 'BENJAMÍN 2 AÑO';
+        if (year === 2016) return 'ALEVÍN 1 AÑO';
+        if (year === 2015) return 'ALEVÍN 2 AÑO';
+        if (year === 2014 || year === 2013) return 'INFANTIL';
+        if (year === 2012 || year === 2011) return 'CADETE';
+        if (year >= 2008 && year <= 2010) return 'JUVENIL';
 
-        return 'Amateur';
-    };
-
-    const loadInscriptions = async () => {
-        try {
-            setLoading(true);
-            setError('');
-
-            const result = await inscriptionService.getAllInscriptions();
-
-            if (result.success) {
-                setInscriptions(result.data);
-                setError('');
-            } else {
-                console.error('Error al cargar inscripciones:', result);
-                setError(result.message || result.error || 'Error al cargar inscripciones');
-                setInscriptions([]);
-            }
-        } catch (error) {
-            console.error('Error inesperado al cargar inscripciones:', error);
-            setError('Error inesperado al cargar las inscripciones');
-            setInscriptions([]);
-        } finally {
-            setLoading(false);
-        }
+        return 'AMATEUR';
     };
 
     const handleLogout = async () => {
@@ -223,6 +196,7 @@ const AdminDashboard = ({ user, onLogout }) => {
                         showFilters={showFilters}
                         filters={filters}
                         inscriptions={inscriptions}
+                        poblaciones={getPoblaciones()}
                         onFilterChange={handleFilterChange}
                         onClearFilters={clearFilters}
                         onToggleFilters={toggleFilters}

@@ -7,7 +7,7 @@ export const handleExportExcel = (filteredInscriptions, activeTab, calcularCateg
         return;
     }
 
-    const tabNames = { 'player': 'Jugadores', 'parent': 'Padres', 'payment': 'Pagos' };
+    const tabNames = { 'player': 'Jugadores', 'parent': 'Padres', 'payment': 'Pagos', 'personal-data-player': 'Datos Personales Jugadores' };
 
     // CASO ESPECIAL: Si es la pestaña de JUGADORES, agrupamos por categorías
     if (activeTab === 'player') {
@@ -18,13 +18,9 @@ export const handleExportExcel = (filteredInscriptions, activeTab, calcularCateg
             if (!dataAgrupada[cat]) dataAgrupada[cat] = [];
 
             dataAgrupada[cat].push({
-                'Código': inscription.codigoInscripcion,
-                'Nombre': inscription.nombreNino,
-                'Apellidos': inscription.apellidos,
-                'DNI': inscription.dni,
-                'Fecha Nacimiento': inscription.fechaNacimiento,
-                'Categoría': cat,
-                'Fecha Inscripción': formatTimestamp(inscription.createdAt)
+                'Nombre': inscription.nombreNino + ' ' + inscription.apellidos,
+                'Año': inscription.fechaNacimiento?.split('-')[0],
+                'Dorsal': " " 
             });
         });
 
@@ -41,7 +37,8 @@ const DataTabs = ({ activeTab, onTabChange, filteredInscriptions, formatTimestam
     const tabs = [
         { id: 'player', icon: 'fas fa-child', label: 'Datos del Jugador' },
         { id: 'parent', icon: 'fas fa-user', label: 'Datos del Padre' },
-        { id: 'payment', icon: 'fas fa-credit-card', label: 'Datos del Pago' }
+        { id: 'payment', icon: 'fas fa-credit-card', label: 'Datos del Pago' },
+        { id: 'personal-data-player', icon: 'fas fa-id-card', label: 'Datos Personales Jugador' }
     ];
 
     
@@ -117,9 +114,31 @@ const DataTabs = ({ activeTab, onTabChange, filteredInscriptions, formatTimestam
                                     <th style={{ padding: '12px 8px' }}>Código</th>
                                     <th style={{ padding: '12px 8px' }}>Nombre Niño/a</th>
                                     <th style={{ padding: '12px 8px' }}>Padre/Tutor</th>
-                                    <th style={{ padding: '12px 8px' }}>Apellidos Padre</th>
                                     <th style={{ padding: '12px 8px' }}>Teléfono</th>
                                     <th style={{ padding: '12px 8px' }}>Email</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {filteredInscriptions.map((inscription) => (
+                                    <tr key={inscription.id} style={{ borderBottom: '1px solid #ddd' }}>
+                                        <td style={{ padding: '12px 8px' }}>{inscription.codigoInscripcion}</td>
+                                        <td style={{ padding: '12px 8px' }}>{inscription.nombreNino} {inscription.apellidos}</td>
+                                        <td style={{ padding: '12px 8px' }}>{inscription.padre?.nombre} {inscription.padre?.apellidos}</td>
+                                        <td style={{ padding: '12px 8px' }}>{inscription.padre?.telefono}</td>
+                                        <td style={{ padding: '12px 8px' }}>{inscription.padre?.email}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </>
+                    )}
+                    {activeTab === 'payment' && (
+                        <>
+                            <thead>
+                                <tr style={{ backgroundColor: '#f4f4f4', borderBottom: '2px solid #ddd' }}>
+                                    <th style={{ padding: '12px 8px' }}>Código</th>
+                                    <th style={{ padding: '12px 8px' }}>Nombre Niño/a</th>
+                                    <th style={{ padding: '12px 8px' }}>Nombre Banco</th>
+                                    <th style={{ padding: '12px 8px' }}>IBAN</th>
                                     <th style={{ padding: '12px 8px' }}>Fecha Inscripción</th>
                                 </tr>
                             </thead>
@@ -128,17 +147,14 @@ const DataTabs = ({ activeTab, onTabChange, filteredInscriptions, formatTimestam
                                     <tr key={inscription.id} style={{ borderBottom: '1px solid #ddd' }}>
                                         <td style={{ padding: '12px 8px' }}>{inscription.codigoInscripcion}</td>
                                         <td style={{ padding: '12px 8px' }}>{inscription.nombreNino} {inscription.apellidos}</td>
-                                        <td style={{ padding: '12px 8px' }}>{inscription.padre?.nombre}</td>
-                                        <td style={{ padding: '12px 8px' }}>{inscription.padre?.apellidos}</td>
-                                        <td style={{ padding: '12px 8px' }}>{inscription.telefono}</td>
-                                        <td style={{ padding: '12px 8px' }}>{inscription.padre?.email}</td>
+                                        <td style={{ padding: '12px 8px' }}>{inscription.banco?.nombre}</td>
+                                        <td style={{ padding: '12px 8px' }}>{inscription.banco?.iban}</td>
                                         <td style={{ padding: '12px 8px' }}>{formatTimestamp(inscription.createdAt)}</td>
                                     </tr>
                                 ))}
                             </tbody>
                         </>
-                    )}
-                    {activeTab === 'payment' && (
+                    )}{activeTab === 'personal-data-player' && (
                         <>
                             <thead>
                                 <tr style={{ backgroundColor: '#f4f4f4', borderBottom: '2px solid #ddd' }}>
