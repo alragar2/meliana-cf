@@ -32,6 +32,15 @@ export const handleExportExcel = (filteredInscriptions, activeTab, calcularCateg
         exportToExcel(data, `Inscripciones_${tabNames[activeTab]}`);
     }
 };
+
+export const handleExportDB = (inscriptions, calcularCategoria, formatTimestamp) => {
+    if (inscriptions.length === 0) {
+        alert('No hay datos para exportar');
+        return;
+    }
+    const data = prepareDataForExport(inscriptions, 'complete', calcularCategoria, formatTimestamp);
+    exportToExcel(data, `Inscripciones_Completa`);
+};
     
 const DataTabs = ({ activeTab, onTabChange, filteredInscriptions, formatTimestamp, calcularCategoria }) => {
     const tabs = [

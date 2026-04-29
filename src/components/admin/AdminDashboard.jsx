@@ -4,7 +4,7 @@ import useInscriptions from '../../hooks/useInscriptions';
 import FiltersPanel from './FiltersPanel';
 import DataTabs from './DataTabs';
 import '../../css/admin-dashboard.css';
-import { handleExportExcel } from './DataTabs'; 
+import { handleExportExcel, handleExportDB } from './DataTabs'; 
 
 const AdminDashboard = ({ user, onLogout }) => {
     const { inscriptions, loading, error, loadInscriptions, filterByDateRange, getPoblaciones } = useInscriptions(true);
@@ -233,6 +233,14 @@ const AdminDashboard = ({ user, onLogout }) => {
                                 >
                                     <i className="fas fa-file-excel"></i>
                                     <span className="export-text">Exportar Excel</span>
+                                </button>
+                                <button
+                                    className="btn-export-excel"
+                                    onClick={() => handleExportDB(filteredInscriptions, calcularCategoria, formatTimestamp)}
+                                    title="Descargar como Excel"
+                                >
+                                    <i className="fas fa-file-excel"></i>
+                                    <span className="export-text">Exportar Base de Datos</span>
                                 </button>
                                 <span className="stat-item">
                                     <i className="fas fa-child"></i>

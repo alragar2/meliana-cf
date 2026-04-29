@@ -77,6 +77,31 @@ export const prepareDataForExport = (filteredInscriptions, activeTab, calcularCa
                 'Categoría': calcularCategoria(inscription.fechaNacimiento),
                 'Fecha Inscripción': formatTimestamp(inscription.createdAt)
             }));
+        case 'complete':
+            return filteredInscriptions.map(inscription => ({
+                'Código': inscription.codigoInscripcion,
+                'Nombre': inscription.nombreNino,
+                'Apellidos': inscription.apellidos,
+                'DNI': inscription.dni,
+                'Fecha Nacimiento': inscription.fechaNacimiento,
+                'Categoría': calcularCategoria(inscription.fechaNacimiento),
+                'Dirección': inscription.direccion,
+                'Población': inscription.poblacion,
+                'CP': inscription.cp,
+                'Teléfono': inscription.telefono,
+                'Nacionalidad': inscription.nacionalidad,
+                'Lugar de Nacimiento': inscription.lugarNacimiento,
+                'Lotería': inscription.loteria ? 'Sí' : 'No',
+                'Nombre Padre/Tutor': inscription.padre?.nombre || '-',
+                'Apellidos Padre/Tutor': inscription.padre?.apellidos || '-',
+                'Teléfono Padre/Tutor': inscription.padre?.telefono || '-',
+                'Email Padre/Tutor': inscription.padre?.email || '-',
+                'DNI Padre/Tutor': inscription.padre?.dni || '-',
+                'Parentesco': inscription.padre?.parentesco || '-',
+                'Nombre Banco': inscription.banco?.nombre || '-',
+                'IBAN': inscription.banco?.iban || '-',
+                'Fecha Inscripción': formatTimestamp(inscription.createdAt)
+            }));
 
         default:
             return [];
