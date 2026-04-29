@@ -116,6 +116,8 @@ const DataTabs = ({ activeTab, onTabChange, filteredInscriptions, formatTimestam
                                     <th style={{ padding: '12px 8px' }}>Padre/Tutor</th>
                                     <th style={{ padding: '12px 8px' }}>Teléfono</th>
                                     <th style={{ padding: '12px 8px' }}>Email</th>
+                                    <th style={{ padding: '12px 8px' }}>DNI</th>
+                                    <th style={{ padding: '12px 8px' }}>Parentesco</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -126,6 +128,8 @@ const DataTabs = ({ activeTab, onTabChange, filteredInscriptions, formatTimestam
                                         <td style={{ padding: '12px 8px' }}>{inscription.padre?.nombre} {inscription.padre?.apellidos}</td>
                                         <td style={{ padding: '12px 8px' }}>{inscription.padre?.telefono}</td>
                                         <td style={{ padding: '12px 8px' }}>{inscription.padre?.email}</td>
+                                        <td style={{ padding: '12px 8px' }}>{inscription.padre?.dni}</td>
+                                        <td style={{ padding: '12px 8px' }}>{inscription.padre?.parentesco}</td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -139,7 +143,7 @@ const DataTabs = ({ activeTab, onTabChange, filteredInscriptions, formatTimestam
                                     <th style={{ padding: '12px 8px' }}>Nombre Niño/a</th>
                                     <th style={{ padding: '12px 8px' }}>Nombre Banco</th>
                                     <th style={{ padding: '12px 8px' }}>IBAN</th>
-                                    <th style={{ padding: '12px 8px' }}>Fecha Inscripción</th>
+                                    <th style={{ padding: '12px 8px' }}>Lotería</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -149,7 +153,15 @@ const DataTabs = ({ activeTab, onTabChange, filteredInscriptions, formatTimestam
                                         <td style={{ padding: '12px 8px' }}>{inscription.nombreNino} {inscription.apellidos}</td>
                                         <td style={{ padding: '12px 8px' }}>{inscription.banco?.nombre}</td>
                                         <td style={{ padding: '12px 8px' }}>{inscription.banco?.iban}</td>
-                                        <td style={{ padding: '12px 8px' }}>{formatTimestamp(inscription.createdAt)}</td>
+                                        <td style={{ padding: '12px 8px' }}>
+                                            <span style={{
+                                                backgroundColor: inscription.loteria ? '#c8e6c9' : '#ffcdd2',
+                                                color: inscription.loteria ? '#2e7d32' : '#c62828',
+                                                padding: '4px 8px'
+                                                }}>
+                                                {inscription.loteria ? 'Sí' : 'No'}
+                                            </span>
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -160,9 +172,13 @@ const DataTabs = ({ activeTab, onTabChange, filteredInscriptions, formatTimestam
                                 <tr style={{ backgroundColor: '#f4f4f4', borderBottom: '2px solid #ddd' }}>
                                     <th style={{ padding: '12px 8px' }}>Código</th>
                                     <th style={{ padding: '12px 8px' }}>Nombre Niño/a</th>
-                                    <th style={{ padding: '12px 8px' }}>Nombre Banco</th>
-                                    <th style={{ padding: '12px 8px' }}>IBAN</th>
-                                    <th style={{ padding: '12px 8px' }}>Fecha Inscripción</th>
+                                    <th style={{ padding: '12px 8px' }}>Población</th>
+                                    <th style={{ padding: '12px 8px' }}>DNI</th>
+                                    <th style={{ padding: '12px 8px' }}>CP</th>
+                                    <th style={{ padding: '12px 8px' }}>Fecha Nac.</th>
+                                    <th style={{ padding: '12px 8px' }}>Teléfono</th>
+                                    <th style={{ padding: '12px 8px' }}>Nacionalidad</th>
+                                    <th style={{ padding: '12px 8px' }}>Lugar Nac.</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -170,9 +186,13 @@ const DataTabs = ({ activeTab, onTabChange, filteredInscriptions, formatTimestam
                                     <tr key={inscription.id} style={{ borderBottom: '1px solid #ddd' }}>
                                         <td style={{ padding: '12px 8px' }}>{inscription.codigoInscripcion}</td>
                                         <td style={{ padding: '12px 8px' }}>{inscription.nombreNino} {inscription.apellidos}</td>
-                                        <td style={{ padding: '12px 8px' }}>{inscription.banco?.nombre}</td>
-                                        <td style={{ padding: '12px 8px' }}>{inscription.banco?.iban}</td>
-                                        <td style={{ padding: '12px 8px' }}>{formatTimestamp(inscription.createdAt)}</td>
+                                        <td style={{ padding: '12px 8px' }}>{inscription.poblacion}</td>
+                                        <td style={{ padding: '12px 8px' }}>{inscription.dni}</td>
+                                        <td style={{ padding: '12px 8px' }}>{inscription.cp}</td>
+                                        <td style={{ padding: '12px 8px' }}>{inscription.fechaNacimiento}</td>
+                                        <td style={{ padding: '12px 8px' }}>{inscription.telefono}</td>
+                                        <td style={{ padding: '12px 8px' }}>{inscription.nacionalidad}</td>
+                                        <td style={{ padding: '12px 8px' }}>{inscription.lugarNacimiento}</td>
                                     </tr>
                                 ))}
                             </tbody>
