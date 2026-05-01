@@ -193,6 +193,58 @@ const InscriptionForm = ({ isVisible, onClose }) => {
                             onFocus={handleFocus}
                         />
                     </div>
+
+                    <div className="form-row single-column">
+                        <div className="form-group">
+                            <label htmlFor="sexo">Sexo *</label>
+                            <select
+                                id="sexo"
+                                name="sexo"
+                                value={formData.sexo}
+                                onChange={handleInputChange}
+                                onBlur={handleBlur}
+                                onFocus={handleFocus}
+                                className={`
+                                    ${touchedFields.sexo ? 'touched' : ''} 
+                                    ${isFieldInvalid('sexo', formData.sexo) ? 'invalid' : ''} 
+                                    ${isFieldValid('sexo', formData.sexo) ? 'valid' : ''}
+                                `.trim()}
+                            >
+                                <option value="">Seleccionar</option>
+                                <option value="masculino">Masculino</option>
+                                <option value="femenino">Femenino</option>
+                            </select>
+                            {isFieldInvalid('sexo', formData.sexo) && <span className="error-message">Este campo es obligatorio</span>}
+                        </div>
+                    </div>
+
+                    <div className="form-row single-column">
+                        <div className="form-group checkbox-group">
+                            <label className="checkbox-label">
+                                <input
+                                    type="checkbox"
+                                    name="hermanosEnClub"
+                                    checked={formData.hermanosEnClub}
+                                    onChange={handleInputChange}
+                                />
+                                ¿Tiene hermanos en el club?
+                            </label>
+                        </div>
+                    </div>
+
+                    <div className="form-row checkbox-row">
+                        <div className="form-group checkbox-group">
+                            <label className="checkbox-label">
+                                <input
+                                    type="checkbox"
+                                    name="loteria"
+                                    checked={formData.loteria}
+                                    onChange={handleInputChange}
+                                />
+                                ¿Quiere participar en la lotería de Navidad?
+                            </label>
+                        </div>
+                    </div>
                 </div>
 
                 <div className="form-section">

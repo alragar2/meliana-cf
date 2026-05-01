@@ -11,7 +11,10 @@ const defaultInitialForm = {
     telefono: '',
     nacionalidad: '',
     lugarNacimiento: '',
+    sexo: '',
     loteria: false,
+    beneficios: false,
+    hermanosEnClub: false,
     // Datos de los Padres/Tutores
     nombrePadre: '',
     apellidosPadre: '',
@@ -30,11 +33,20 @@ export default function useInscriptionForm(initialValues = {}) {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const isFieldInvalid = (fieldName, fieldValue) => {
-        return touchedFields[fieldName] && (!fieldValue || fieldValue === '' || (typeof fieldValue === 'string' && fieldValue.trim() === ''));
+        // Para campos requeridos, verificar si está vacío
+        const requiredFields = ['sexo']; // Agregar otros campos requeridos aquí
+        if (requiredFields.includes(fieldName)) {
+            return touchedFields[fieldName] && (!fieldValue || fieldValue === '' || (typeof fieldValue === 'string' && fieldValue.trim() === ''));
+        }
+        return false;
     };
 
     const isFieldValid = (fieldName, fieldValue) => {
-        return touchedFields[fieldName] && fieldValue && fieldValue !== '' && (typeof fieldValue === 'string' ? fieldValue.trim() !== '' : true);
+        const requiredFields = ['sexo'];
+        if (requiredFields.includes(fieldName)) {
+            return touchedFields[fieldName] && fieldValue && fieldValue !== '' && (typeof fieldValue === 'string' ? fieldValue.trim() !== '' : true);
+        }
+        return false;
     };
 
     const handleInputChange = (e) => {
@@ -58,9 +70,8 @@ export default function useInscriptionForm(initialValues = {}) {
 
     const handleFocus = (e) => {
         const { name } = e.target;
-        if (e.target.tagName && e.target.tagName.toLowerCase() === 'select') {
-            setTouchedFields(prev => ({ ...prev, [name]: true }));
-        }
+        // No marcar automáticamente como touched para selects
+        // Solo para otros tipos de input si es necesario
     };
 
     const resetForm = () => {

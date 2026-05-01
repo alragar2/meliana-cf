@@ -44,7 +44,7 @@ export const prepareDataForExport = (filteredInscriptions, activeTab, calcularCa
                 'Apellidos': inscription.apellidos,
                 'DNI': inscription.dni,
                 'Fecha Nacimiento': inscription.fechaNacimiento,
-                'Categoría': calcularCategoria(inscription.fechaNacimiento),
+                'Categoría': inscription.categoria || calcularCategoria(inscription.fechaNacimiento),
                 'Fecha Inscripción': formatTimestamp(inscription.createdAt)
             }));
 
@@ -84,13 +84,17 @@ export const prepareDataForExport = (filteredInscriptions, activeTab, calcularCa
                 'Apellidos': inscription.apellidos,
                 'DNI': inscription.dni,
                 'Fecha Nacimiento': inscription.fechaNacimiento,
-                'Categoría': calcularCategoria(inscription.fechaNacimiento),
+                'Categoría': inscription.categoria || calcularCategoria(inscription.fechaNacimiento),
                 'Dirección': inscription.direccion,
                 'Población': inscription.poblacion,
                 'CP': inscription.cp,
                 'Teléfono': inscription.telefono,
                 'Nacionalidad': inscription.nacionalidad,
                 'Lugar de Nacimiento': inscription.lugarNacimiento,
+                'Sexo': inscription.sexo || '-',
+                'Hermanos en Club': inscription.hermanosEnClub ? 'Sí' : 'No',
+                'Lotería': inscription.loteria ? 'Sí' : 'No',
+                'Beneficios': inscription.beneficios ? 'Sí' : 'No',
                 'Lotería': inscription.loteria ? 'Sí' : 'No',
                 'Nombre Padre/Tutor': inscription.padre?.nombre || '-',
                 'Apellidos Padre/Tutor': inscription.padre?.apellidos || '-',

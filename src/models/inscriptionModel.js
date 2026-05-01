@@ -19,7 +19,9 @@ export const createInscriptionDataModel = (inscriptionData, customId) => {
     telefono: inscriptionData.telefono,
     nacionalidad: inscriptionData.nacionalidad,
     lugarNacimiento: inscriptionData.lugarNacimiento,
+    sexo: inscriptionData.sexo,
     loteria: inscriptionData.loteria || false,
+    beneficios: inscriptionData.beneficios || false,
     
     // Datos de los Padres/Tutores (mapa anidado)
     padre: {
@@ -41,25 +43,23 @@ export const createInscriptionDataModel = (inscriptionData, customId) => {
     codigoInscripcion: customId,
     createdAt: Timestamp.now(),
     fechaCreacion: Timestamp.now(),
-    fechaActualizacion: Timestamp.now(),
-    estado: 'pendiente', // Estados: pendiente, confirmada, rechazada
+    hermanosEnClub: inscriptionData.hermanosEnClub || false,
+    categoria: null,
     dorsal: null,
-    pagos: [],
-    totalPagado: 0,
-    estadoPago: 'pendiente' // pendiente, parcial, pagado
-  };
-};
-
-// Estructura de un pago
-export const createPaymentDataModel = (paymentData) => {
-  return {
-    id: Date.now().toString(),
-    fecha: Timestamp.now(),
-    monto: parseFloat(paymentData.monto),
-    metodo: paymentData.metodo, // 'banco' o 'mano'
-    concepto: paymentData.concepto || 'Pago campus',
-    registradoPor: paymentData.registradoPor || 'Administrador',
-    notas: paymentData.notas || ''
+    pagos: {
+        inscripcion: 0,
+        cuota_1: 0,
+        cuota_2: 0,
+        cuota_3: 0,
+        cuota_4: 0,
+        cuota_5: 0,
+        cuota_6: 0,
+        cuota_7: 0,
+        cuota_8: 0,
+        cuota_9: 0,
+        cuota_loteria: 0
+    },
+    totalPagado: 0
   };
 };
 
@@ -76,6 +76,7 @@ export const REQUIRED_INSCRIPTION_FIELDS = [
   'telefono',
   'nacionalidad',
   'lugarNacimiento',
+  'sexo',
   // Datos de los Padres/Tutores
   'nombrePadre',
   'apellidosPadre',
@@ -133,3 +134,4 @@ export const EXPORT_FIELDS_PERSONAL = {
   'banco.iban': 'IBAN',
   createdAt: 'Fecha Inscripción'
 };
+

@@ -87,6 +87,7 @@ const DataTabs = ({ activeTab, onTabChange, filteredInscriptions, formatTimestam
                                     <th style={{ padding: '12px 8px' }}>DNI</th>
                                     <th style={{ padding: '12px 8px' }}>Fecha Nac.</th>
                                     <th style={{ padding: '12px 8px' }}>Categoría</th>
+                                    <th style={{ padding: '12px 8px' }}>Total a Pagar</th>
                                     <th style={{ padding: '12px 8px' }}>Fecha Inscripción</th>
                                 </tr>
                             </thead>
@@ -107,9 +108,10 @@ const DataTabs = ({ activeTab, onTabChange, filteredInscriptions, formatTimestam
                                                 fontSize: '0.85rem', 
                                                 fontWeight: '500' 
                                             }}>
-                                                {calcularCategoria(inscription.fechaNacimiento)}
+                                                {inscription.categoria || calcularCategoria(inscription.fechaNacimiento)}
                                             </span>
                                         </td>
+                                        <td style={{ padding: '12px 8px' }}>{inscription.totalPagado}€</td>
                                         <td style={{ padding: '12px 8px' }}>{formatTimestamp(inscription.createdAt)}</td>
                                     </tr>
                                 ))}

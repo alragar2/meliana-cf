@@ -16,14 +16,14 @@ const FiltersPanel = ({
                 const year = parseInt(inscription.fechaNacimiento.substring(0, 4));
                 if (!isNaN(year)) {
                     let category = '';
-                    if (year === 2020 || year === 2021) category = 'Querubín';
-                    else if (year === 2018 || year === 2019) category = 'Pre-Benjamín';
-                    else if (year === 2016 || year === 2017) category = 'Benjamín';
-                    else if (year === 2014 || year === 2015) category = 'Alevín';
-                    else if (year === 2012 || year === 2013) category = 'Infantil';
-                    else if (year === 2010 || year === 2011) category = 'Cadete';
-                    else if (year >= 2007 && year <= 2009) category = 'Juvenil';
-                    else category = 'Amateur';
+                    if (year === 2020 || year === 2021) category = 'QUERUBÍN';
+                    else if (year === 2018 || year === 2019) category = 'PREBE';
+                    else if (year === 2016 || year === 2017) category = 'BENJAMÍN 1 AÑO';
+                    else if (year === 2014 || year === 2015) category = 'ALEVÍN 1 AÑO';
+                    else if (year === 2012 || year === 2013) category = 'INFANTIL';
+                    else if (year === 2010 || year === 2011) category = 'CADETE';
+                    else if (year >= 2007 && year <= 2009) category = 'JUVENIL';
+                    else category = 'AMATEUR';
                     
                     if (!categories.includes(category)) {
                         categories.push(category);
@@ -102,23 +102,6 @@ const FiltersPanel = ({
                             {getUniqueCategories().map(categoria => (
                                 <option key={categoria} value={categoria}>
                                     {categoria}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-
-                    <div className="filter-group">
-                        <label htmlFor="estado-filter">Estado</label>
-                        <select
-                            id="estado-filter"
-                            className="filter-select"
-                            value={filters.estado || ''}
-                            onChange={(e) => onFilterChange('estado', e.target.value)}
-                        >
-                            <option value="">Todos los estados</option>
-                            {getUniqueStatuses().map(estado => (
-                                <option key={estado} value={estado}>
-                                    {estado.charAt(0).toUpperCase() + estado.slice(1)}
                                 </option>
                             ))}
                         </select>

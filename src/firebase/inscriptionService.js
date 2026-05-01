@@ -6,6 +6,8 @@ import {
   REQUIRED_INSCRIPTION_FIELDS, 
   VALIDATION_PATTERNS 
 } from '../models/inscriptionModel';
+import { calcularCategoria } from '../utils/categories';
+import { calculatePagosTotales } from '../utils/payments';
 
 // Servicio para manejar las inscripciones en Firebase
 export const inscriptionService = {
@@ -32,6 +34,11 @@ export const inscriptionService = {
       const customId = `MCF-2026-${nextNumber}`;
 
       const dataToSave = createInscriptionDataModel(inscriptionData, customId);
+
+      // Calcular categoría y pagos totales
+      const categoria = calcularCategoria(inscriptionData.fechaNacimiento, inscriptionData.sexo);
+      dataToSave.categoria = categoria;
+      dataToSave.totalPagado = calculatePagosTotales(categoria, dataToSave.pagos, dataToSave.loteria);
 
       console.log('📝 [Firebase Service] Datos finales a guardar:', dataToSave);
       console.log('✍️ [Firebase Service] Enviando a Firestore...');

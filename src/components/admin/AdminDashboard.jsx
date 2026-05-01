@@ -5,6 +5,7 @@ import FiltersPanel from './FiltersPanel';
 import DataTabs from './DataTabs';
 import '../../css/admin-dashboard.css';
 import { handleExportExcel, handleExportDB } from './DataTabs'; 
+import { calcularCategoria } from '../../utils/categories';
 
 const AdminDashboard = ({ user, onLogout }) => {
     const { inscriptions, loading, error, loadInscriptions, filterByDateRange, getPoblaciones } = useInscriptions(true);
@@ -20,24 +21,6 @@ const AdminDashboard = ({ user, onLogout }) => {
         fechaDesde: '',
         fechaHasta: ''
     });
-
-    const calcularCategoria = (fechaNacimiento) => {
-        if (!fechaNacimiento) return '-';
-        const year = parseInt(fechaNacimiento.substring(0, 4));
-        if (isNaN(year)) return '-';
-
-        if (year === 2021 || year === 2022) return 'QUERUBÍN';
-        if (year === 2020 || year === 2019) return 'PREBE';
-        if (year === 2018) return 'BENJAMÍN 1 AÑO'; 
-        if (year === 2017) return 'BENJAMÍN 2 AÑO';
-        if (year === 2016) return 'ALEVÍN 1 AÑO';
-        if (year === 2015) return 'ALEVÍN 2 AÑO';
-        if (year === 2014 || year === 2013) return 'INFANTIL';
-        if (year === 2012 || year === 2011) return 'CADETE';
-        if (year >= 2008 && year <= 2010) return 'JUVENIL';
-
-        return 'AMATEUR';
-    };
 
     const handleLogout = async () => {
         if (window.confirm('¿Está seguro que desea cerrar sesión?')) {
@@ -232,12 +215,12 @@ const AdminDashboard = ({ user, onLogout }) => {
                                     title="Descargar como Excel"
                                 >
                                     <i className="fas fa-file-excel"></i>
-                                    <span className="export-text">Exportar Excel</span>
+                                    <span className="export-text">Exportar Excel {activeTab === 'player' ? 'Jugadores' : activeTab === 'parent' ? 'Padres' : activeTab === 'payment' ? 'Pagos' : 'Datos Personales Jugadores'}</span>
                                 </button>
                                 <button
                                     className="btn-export-excel"
-                                    onClick={() => handleExportDB(filteredInscriptions, calcularCategoria, formatTimestamp)}
-                                    title="Descargar como Excel"
+                                    onClick={() => handleExportDB(filteredInscriptions, calcularCategoria, formatTimestamp)  }
+                                    title="Descargar como Excel"    
                                 >
                                     <i className="fas fa-file-excel"></i>
                                     <span className="export-text">Exportar Base de Datos</span>
