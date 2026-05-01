@@ -59,7 +59,8 @@ export const createInscriptionDataModel = (inscriptionData, customId) => {
         cuota_9: 0,
         cuota_loteria: 0
     },
-    totalPagado: 0
+    totalPagado: 0,
+    totalAPagar: 0
   };
 };
 

@@ -44,10 +44,11 @@ export const handleExportDB = (inscriptions, calcularCategoria, formatTimestamp)
     
 const DataTabs = ({ activeTab, onTabChange, filteredInscriptions, formatTimestamp, calcularCategoria }) => {
     const tabs = [
-        { id: 'player', icon: 'fas fa-child', label: 'Datos del Jugador' },
-        { id: 'parent', icon: 'fas fa-user', label: 'Datos del Padre' },
-        { id: 'payment', icon: 'fas fa-credit-card', label: 'Datos del Pago' },
-        { id: 'personal-data-player', icon: 'fas fa-id-card', label: 'Datos Personales Jugador' }
+        { id: 'player', icon: 'fas fa-child', label: 'Datos Jugador' },
+        { id: 'parent', icon: 'fas fa-user', label: 'Datos Padre' },
+        { id: 'payment', icon: 'fas fa-credit-card', label: 'Datos Pago' },
+        { id: 'personal-data-player', icon: 'fas fa-id-card', label: 'Datos Personales Jugador' },
+        { id: 'cuotes_payment', icon: 'fas fa-money-bill-wave', label: 'Pagos de cuotas' }
     ];
 
     
@@ -111,7 +112,7 @@ const DataTabs = ({ activeTab, onTabChange, filteredInscriptions, formatTimestam
                                                 {inscription.categoria || calcularCategoria(inscription.fechaNacimiento)}
                                             </span>
                                         </td>
-                                        <td style={{ padding: '12px 8px' }}>{inscription.totalPagado}€</td>
+                                        <td style={{ padding: '12px 8px' }}>{inscription.totalAPagar}€</td>
                                         <td style={{ padding: '12px 8px' }}>{formatTimestamp(inscription.createdAt)}</td>
                                     </tr>
                                 ))}
@@ -155,6 +156,7 @@ const DataTabs = ({ activeTab, onTabChange, filteredInscriptions, formatTimestam
                                     <th style={{ padding: '12px 8px' }}>Nombre Banco</th>
                                     <th style={{ padding: '12px 8px' }}>IBAN</th>
                                     <th style={{ padding: '12px 8px' }}>Lotería</th>
+                                    <th style={{ padding: '12px 8px' }}>Total a Pagar</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -173,6 +175,7 @@ const DataTabs = ({ activeTab, onTabChange, filteredInscriptions, formatTimestam
                                                 {inscription.loteria ? 'Sí' : 'No'}
                                             </span>
                                         </td>
+                                        <td style={{ padding: '12px 8px' }}>{inscription.totalAPagar}€</td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -204,6 +207,61 @@ const DataTabs = ({ activeTab, onTabChange, filteredInscriptions, formatTimestam
                                         <td style={{ padding: '12px 8px' }}>{inscription.telefono}</td>
                                         <td style={{ padding: '12px 8px' }}>{inscription.nacionalidad}</td>
                                         <td style={{ padding: '12px 8px' }}>{inscription.lugarNacimiento}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </>
+                    )}{activeTab === 'cuotes_payment' && (
+                        <>
+                            <thead>
+                                <tr style={{ backgroundColor: '#f4f4f4', borderBottom: '2px solid #ddd' }}>
+                                    <th style={{ padding: '12px 8px' }}>Código</th>
+                                    <th style={{ padding: '12px 8px' }}>Nombre Niño/a</th>
+                                    <th style={{ padding: '12px 8px' }}>IBAN</th>
+                                    <th style={{ padding: '12px 8px' }}>Inscripción</th>
+                                    <th style={{ padding: '12px 8px' }}>Cuota 1</th>
+                                    <th style={{ padding: '12px 8px' }}>Cuota 2</th>
+                                    <th style={{ padding: '12px 8px' }}>Cuota 3</th>
+                                    <th style={{ padding: '12px 8px' }}>Cuota 4</th>
+                                    <th style={{ padding: '12px 8px' }}>Cuota 5</th>
+                                    <th style={{ padding: '12px 8px' }}>Cuota 6</th>
+                                    <th style={{ padding: '12px 8px' }}>Cuota 7</th>
+                                    <th style={{ padding: '12px 8px' }}>Cuota 8</th>
+                                    <th style={{ padding: '12px 8px' }}>Cuota 9</th>
+                                    <th style={{ padding: '12px 8px' }}>Cuota Loteria</th>
+                                    <th style={{ padding: '12px 8px' }}>Lotería</th>
+                                    <th style={{ padding: '12px 8px' }}>Total a Pagar</th>
+                                    <th style={{ padding: '12px 8px' }}>Total Pagado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {filteredInscriptions.map((inscription) => (
+                                    <tr key={inscription.id} style={{ borderBottom: '1px solid #ddd' }}>
+                                        <td style={{ padding: '12px 8px' }}>{inscription.codigoInscripcion}</td>
+                                        <td style={{ padding: '12px 8px' }}>{inscription.nombreNino} {inscription.apellidos}</td>
+                                        <td style={{ padding: '12px 8px' }}>{inscription.banco?.iban}</td>
+                                        <td style={{ padding: '12px 8px' }}>{inscription.pagos?.inscripcion}€</td>
+                                        <td style={{ padding: '12px 8px' }}>{inscription.pagos?.cuota_1}€</td>
+                                        <td style={{ padding: '12px 8px' }}>{inscription.pagos?.cuota_2}€</td>
+                                        <td style={{ padding: '12px 8px' }}>{inscription.pagos?.cuota_3}€</td>
+                                        <td style={{ padding: '12px 8px' }}>{inscription.pagos?.cuota_4}€</td>
+                                        <td style={{ padding: '12px 8px' }}>{inscription.pagos?.cuota_5}€</td>
+                                        <td style={{ padding: '12px 8px' }}>{inscription.pagos?.cuota_6}€</td>
+                                        <td style={{ padding: '12px 8px' }}>{inscription.pagos?.cuota_7}€</td>
+                                        <td style={{ padding: '12px 8px' }}>{inscription.pagos?.cuota_8}€</td>
+                                        <td style={{ padding: '12px 8px' }}>{inscription.pagos?.cuota_9}€</td>
+                                        <td style={{ padding: '12px 8px' }}>{inscription.pagos?.cuota_loteria}€</td>
+                                        <td style={{ padding: '12px 8px' }}>
+                                            <span style={{
+                                                backgroundColor: inscription.loteria ? '#c8e6c9' : '#ffcdd2',
+                                                color: inscription.loteria ? '#2e7d32' : '#c62828',
+                                                padding: '4px 8px'
+                                                }}>
+                                                {inscription.loteria ? 'Sí' : 'No'}
+                                            </span>
+                                        </td>
+                                        <td style={{ padding: '12px 8px' }}>{inscription.totalAPagar}€</td>
+                                        <td style={{ padding: '12px 8px' }}>{inscription.totalPagado}€</td>
                                     </tr>
                                 ))}
                             </tbody>
