@@ -38,7 +38,7 @@ export const inscriptionService = {
       // Calcular categoría y pagos totales
       const categoria = calcularCategoria(inscriptionData.fechaNacimiento, inscriptionData.sexo);
       dataToSave.categoria = categoria;
-      dataToSave.totalAPagar = calculatePagosTotales(categoria, dataToSave.pagos, dataToSave.loteria);
+      dataToSave.totalAPagar = calculatePagosTotales(categoria, dataToSave.loteria, dataToSave.hermanosEnClub);
 
       console.log('📝 [Firebase Service] Datos finales a guardar:', dataToSave);
       console.log('✍️ [Firebase Service] Enviando a Firestore...');

@@ -19,10 +19,11 @@ export const calculateTotalPagado = (pagos) => {
 /**
  * Calcula los pagos totales según la categoría del jugador
  * @param {string} categoria - La categoría del jugador
- * @param {Object} pagos - Objeto que contiene los pagos del jugador
- * @returns {number} - El total pagado actualizado
+ * @param {boolean} loteria - Si participa en la lotería
+ * @param {boolean} hermanosEnClub - Si tiene hermanos en el club
+ * @returns {number} - El total a pagar
  */
-export const calculatePagosTotales = (categoria, pagos, loteria) => {
+export const calculatePagosTotales = (categoria, loteria, hermanosEnClub) => {
 
     let pago = 0;
     switch (categoria) {
@@ -51,5 +52,10 @@ export const calculatePagosTotales = (categoria, pagos, loteria) => {
     if (!loteria) {
         pago += 50;
     }
+
+    if (hermanosEnClub) {
+        pago -= 50;
+    }
+
     return pago;
 }

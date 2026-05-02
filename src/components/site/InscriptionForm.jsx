@@ -311,17 +311,30 @@ const InscriptionForm = ({ isVisible, onClose }) => {
                             onBlur={handleBlur}
                             onFocus={handleFocus}
                         />
-                        <FormField
-                            label="Parentesco *"
-                            name="parentesco"
-                            type="text"
-                            formData={formData}
-                            touchedFields={touchedFields}
-                            isFieldInvalid={isFieldInvalid}
-                            onChange={handleInputChange}
-                            onBlur={handleBlur}
-                            onFocus={handleFocus}
-                        />
+                        <div className="form-row single-column">
+                        <div className="form-group">
+                            <label htmlFor="parentesco">Parentesco *</label>
+                            <select
+                                id="parentesco"
+                                name="parentesco"
+                                value={formData.parentesco}
+                                onChange={handleInputChange}
+                                onBlur={handleBlur}
+                                onFocus={handleFocus}
+                                className={`
+                                    ${touchedFields.parentesco ? 'touched' : ''} 
+                                    ${isFieldInvalid('parentesco', formData.parentesco) ? 'invalid' : ''} 
+                                    ${isFieldValid('parentesco', formData.parentesco) ? 'valid' : ''}
+                                `.trim()}
+                            >
+                                <option value="">Seleccionar</option>
+                                <option value="padre">Padre</option>
+                                <option value="madre">Madre</option>
+                                <option value="tutor">Tutor</option>
+                            </select>
+                            {isFieldInvalid('parentesco', formData.parentesco) && <span className="error-message">Este campo es obligatorio</span>}
+                        </div>
+                    </div>
                     </div>
                 </div>
 
