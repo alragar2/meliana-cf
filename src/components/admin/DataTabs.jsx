@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect }from 'react';
 import { exportToExcel, prepareDataForExport, exportToExcelByCategories } from '../../utils/excelExporter';
+import { savePaymentToFirestore } from '../../firebase/modify-db';
+import '../../css/dataTabs.css';
 
 export const handleExportExcel = (filteredInscriptions, activeTab, calcularCategoria, formatTimestamp) => {
     if (filteredInscriptions.length === 0) {
@@ -9,8 +11,6 @@ export const handleExportExcel = (filteredInscriptions, activeTab, calcularCateg
 
     const tabNames = { 'player': 'Jugadores', 'parent': 'Padres', 'payment': 'Pagos', 'personal-data-player': 'Datos Personales Jugadores' };
 
-    // CASO ESPECIAL: Si es la pestaña de JUGADORES, agrupamos por categorías
-    if (activeTab === 'player') {
         const dataAgrupada = {};
 
         filteredInscriptions.forEach(inscription => {
@@ -25,12 +25,7 @@ export const handleExportExcel = (filteredInscriptions, activeTab, calcularCateg
         });
 
         exportToExcelByCategories(dataAgrupada, `Inscripciones_Jugadores_Por_Categoria`);
-    } 
-    // CASO NORMAL: Para Padres y Pagos, usamos la lógica anterior
-    else {
-        const data = prepareDataForExport(filteredInscriptions, activeTab, calcularCategoria, formatTimestamp);
-        exportToExcel(data, `Inscripciones_${tabNames[activeTab]}`);
-    }
+    
 };
 
 export const handleExportDB = (inscriptions, calcularCategoria, formatTimestamp) => {
@@ -43,6 +38,46 @@ export const handleExportDB = (inscriptions, calcularCategoria, formatTimestamp)
 };
     
 const DataTabs = ({ activeTab, onTabChange, filteredInscriptions, formatTimestamp, calcularCategoria }) => {
+
+    const [localInscriptions, setLocalInscriptions] = useState(filteredInscriptions);
+
+    useEffect(() => {
+        setLocalInscriptions(filteredInscriptions);
+    }, [filteredInscriptions]);
+
+    const handleSave = async (id, campo, valor) => {
+        // Buscamos los pagos actuales para pasarlos a la función
+        const inscripcion = localInscriptions.find(ins => ins.id === id);
+        
+        try {
+            const result = await savePaymentToFirestore(id, campo, valor, inscripcion.pagos);
+            if (result.success) {
+                // Actualizar el total pagado en el estado local para que se refleje inmediatamente
+                setLocalInscriptions(prevInscriptions => 
+                    prevInscriptions.map(ins => 
+                        ins.id === id 
+                            ? { ...ins, totalPagado: result.nuevoTotalPagado } 
+                            : ins
+                    )
+                );
+            } else {
+                alert("Error al guardar en la base de datos. La respuesta no fue exitosa.");
+            }
+        } catch (err) {
+            alert("Error al guardar en la base de datos");
+        }
+    };
+
+    const handleInputChange = (id, campo, valor) => {
+        const nuevas = localInscriptions.map(ins => {
+            if (ins.id === id) {
+                return { ...ins, pagos: { ...ins.pagos, [campo]: valor } };
+            }
+            return ins;
+        });
+        setLocalInscriptions(nuevas);
+    };
+
     const tabs = [
         { id: 'player', icon: 'fas fa-child', label: 'Datos Jugador' },
         { id: 'parent', icon: 'fas fa-user', label: 'Datos Padre' },
@@ -217,7 +252,6 @@ const DataTabs = ({ activeTab, onTabChange, filteredInscriptions, formatTimestam
                                 <tr style={{ backgroundColor: '#f4f4f4', borderBottom: '2px solid #ddd' }}>
                                     <th style={{ padding: '12px 8px' }}>Código</th>
                                     <th style={{ padding: '12px 8px' }}>Nombre Niño/a</th>
-                                    <th style={{ padding: '12px 8px' }}>IBAN</th>
                                     <th style={{ padding: '12px 8px' }}>Inscripción</th>
                                     <th style={{ padding: '12px 8px' }}>Cuota 1</th>
                                     <th style={{ padding: '12px 8px' }}>Cuota 2</th>
@@ -235,22 +269,52 @@ const DataTabs = ({ activeTab, onTabChange, filteredInscriptions, formatTimestam
                                 </tr>
                             </thead>
                             <tbody>
-                                {filteredInscriptions.map((inscription) => (
+                                {localInscriptions.map((inscription) => (
                                     <tr key={inscription.id} style={{ borderBottom: '1px solid #ddd' }}>
                                         <td style={{ padding: '12px 8px' }}>{inscription.codigoInscripcion}</td>
                                         <td style={{ padding: '12px 8px' }}>{inscription.nombreNino} {inscription.apellidos}</td>
-                                        <td style={{ padding: '12px 8px' }}>{inscription.banco?.iban}</td>
-                                        <td style={{ padding: '12px 8px' }}>{inscription.pagos?.inscripcion}€</td>
-                                        <td style={{ padding: '12px 8px' }}>{inscription.pagos?.cuota_1}€</td>
-                                        <td style={{ padding: '12px 8px' }}>{inscription.pagos?.cuota_2}€</td>
-                                        <td style={{ padding: '12px 8px' }}>{inscription.pagos?.cuota_3}€</td>
-                                        <td style={{ padding: '12px 8px' }}>{inscription.pagos?.cuota_4}€</td>
-                                        <td style={{ padding: '12px 8px' }}>{inscription.pagos?.cuota_5}€</td>
-                                        <td style={{ padding: '12px 8px' }}>{inscription.pagos?.cuota_6}€</td>
-                                        <td style={{ padding: '12px 8px' }}>{inscription.pagos?.cuota_7}€</td>
-                                        <td style={{ padding: '12px 8px' }}>{inscription.pagos?.cuota_8}€</td>
-                                        <td style={{ padding: '12px 8px' }}>{inscription.pagos?.cuota_9}€</td>
-                                        <td style={{ padding: '12px 8px' }}>{inscription.pagos?.cuota_loteria}€</td>
+                                        {/* Campo Inscripción Editable */}
+                                        <td style={{ padding: '4px' }}>
+                                            <div className="cuota-cell-container">
+                                                <input 
+                                                    type="number"
+                                                    value={inscription.pagos?.inscripcion || 0}
+                                                    className="input-cuota"
+                                                    onChange={(e) => handleInputChange(inscription.id, 'inscripcion', e.target.value)}
+                                                    onBlur={(e) => handleSave(inscription.id, 'inscripcion', e.target.value)}
+                                                />
+                                                <span>€</span>
+                                            </div>
+                                        </td>
+
+                                        {/* Cuotas del 1 al 9 Dinámicas */}
+                                        {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
+                                            <td key={num} style={{ padding: '4px' }}>
+                                                <div className="cuota-cell-container">
+                                                    <input 
+                                                        type="number"
+                                                        value={inscription.pagos?.[`cuota_${num}`] || 0}
+                                                        className="input-cuota"
+                                                        onChange={(e) => handleInputChange(inscription.id, `cuota_${num}`, e.target.value)}
+                                                        onBlur={(e) => handleSave(inscription.id, `cuota_${num}`, e.target.value)}
+                                                    /> 
+                                                    <span>€</span>
+                                                </div>
+                                            </td>
+                                        ))}
+
+                                        <td style={{ padding: '4px' }}>
+                                            <div className="cuota-cell-container">
+                                                <input 
+                                                    type="number"
+                                                    value={inscription.pagos?.cuota_loteria || 0}
+                                                    className="input-cuota"
+                                                    onChange={(e) => handleInputChange(inscription.id, 'cuota_loteria', e.target.value)}
+                                                    onBlur={(e) => handleSave(inscription.id, 'cuota_loteria', e.target.value)}
+                                                />
+                                                <span>€</span>
+                                            </div>
+                                        </td>
                                         <td style={{ padding: '12px 8px' }}>
                                             <span style={{
                                                 backgroundColor: inscription.loteria ? '#c8e6c9' : '#ffcdd2',

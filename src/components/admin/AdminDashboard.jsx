@@ -215,7 +215,7 @@ const AdminDashboard = ({ user, onLogout }) => {
                                     title="Descargar como Excel"
                                 >
                                     <i className="fas fa-file-excel"></i>
-                                    <span className="export-text">Exportar Excel {activeTab === 'player' ? 'Jugadores' : activeTab === 'parent' ? 'Padres' : activeTab === 'payment' ? 'Pagos' : 'Datos Personales Jugadores'}</span>
+                                    <span className="export-text">Jugadores</span>
                                 </button>
                                 <button
                                     className="btn-export-excel"
@@ -223,7 +223,7 @@ const AdminDashboard = ({ user, onLogout }) => {
                                     title="Descargar como Excel"    
                                 >
                                     <i className="fas fa-file-excel"></i>
-                                    <span className="export-text">Exportar Base de Datos</span>
+                                    <span className="export-text">Base de Datos</span>
                                 </button>
                                 <span className="stat-item">
                                     <i className="fas fa-child"></i>

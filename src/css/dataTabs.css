@@ -1,0 +1,32 @@
+/* DataTabs.css */
+
+.cuota-cell-container {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.input-cuota {
+    width: 55px;
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    text-align: right;
+    font-size: 14px;
+    transition: border-color 0.2s;
+    background-color: #fff;
+    color: #333;
+}
+
+.input-cuota:focus {
+    border-color: #4a90e2;
+    outline: none;
+    box-shadow: 0 0 3px rgba(74, 144, 226, 0.5);
+}
+
+/* Opcional: Quitar las flechas del input type="number" para que sea más limpio */
+.input-cuota::-webkit-inner-spin-button,
+.input-cuota::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
