@@ -198,25 +198,25 @@ export const exportDatabaseToExcel = (inscriptions, fileName = 'base_de_datos_me
             });
             wsComplete['!cols'] = colWidths;
         }
-        XLSX.utils.book_append_sheet(wb, wsComplete, 'Datos Completos');
+        XLSX.utils.book_append_sheet(wb, wsComplete, 'BASE DE DATOS');
 
         // --- Hoja 2: Ingresos ---
         const ingresosData = inscriptions.map(inscription => {
             const pagos = inscription.pagos || {};
             const data = {
                 'ID': inscription.codigoInscripcion,
-                'Nombre': inscription.nombreNino,
-                'Equipo': inscription.categoria,
-                'Hermanos': inscription.hermanosEnClub ? 'Sí' : 'No',
-                'Lotería': inscription.loteria ? 'Sí' : 'No',
+                'NOMBRE': inscription.nombreNino + ' ' + inscription.apellidos,
+                'EQUIPO': inscription.categoria,
+                'HERMANOS': inscription.hermanosEnClub ? 'Sí' : 'No',
+                'LOTERÍA': inscription.loteria ? 'Sí' : 'No',
                 'IBAN': inscription.banco?.iban || '-',
-                'Pago contado': pagos.contado || " ",
-                'Inscripción': pagos.inscripcion || 0,
+                'PAGO CONTADO': pagos.contado || " ",
+                'INSCRIPCIÓN': pagos.inscripcion || 0,
             };
             for (let i = 1; i <= 9; i++) {
                 data[`Cuota ${i}`] = pagos[`cuota_${i}`] || 0;
             }
-            data['Pago Lotería'] = pagos.cuota_loteria || 0;
+            data['PAGO LOTERÍA'] = pagos.cuota_loteria || 0;
             return data;
         });
 
@@ -232,8 +232,44 @@ export const exportDatabaseToExcel = (inscriptions, fileName = 'base_de_datos_me
             });
             wsIngresos['!cols'] = colWidths;
         }
-        XLSX.utils.book_append_sheet(wb, wsIngresos, 'Ingresos');
+        XLSX.utils.book_append_sheet(wb, wsIngresos, 'INGRESOS');
 
+        //-- Hoja 3: Gastos ---
+        const gastosData = inscriptions.map(inscription => {
+            return {
+                'EQUIPO': inscription.categoria,
+                'JUGADORES': " ",
+                'MUTUA': " ",
+                'TOTAL MUTUA': " ",
+                'FICHA': " ",
+                'TOTAL FICHA': " ",
+                'INSCRI EQUIPO': " ",
+                'DELEGADO MUTUA': " ",
+                'ENTRENADOR MUTUA': " ",
+                'ENTRENADOR FICHA': " ",
+                'CUOTA ANUAL ENTRENADOR': " ",
+                'CUOTA CONTRATO CLUB': " ",
+                'PAGO ENTRENADOR AÑO': " ",
+                'COSTE DELEGADO': " ",
+                'GASTOS VARIOS': " "
+            };
+        });
+
+        const wsGastos = XLSX.utils.json_to_sheet(gastosData);
+        if (gastosData.length > 0) {
+            const maxWidth = 50;
+            const colWidths = Object.keys(gastosData[0]).map(key => {
+                const maxLen = Math.max(
+                    key.length,
+                    ...gastosData.map(item => String(item[key] || '').length)
+                );
+                return { wch: Math.min(maxLen + 2, maxWidth) };
+            });
+            wsGastos['!cols'] = colWidths;
+        }
+        XLSX.utils.book_append_sheet(wb, wsGastos, 'GASTOS');
+
+        // Descargar el archivo
         const timestamp = new Date().toLocaleString('es-ES').replace(/[\/:]/g, '-');
         XLSX.writeFile(wb, `${fileName}_${timestamp}.xlsx`);
     }).catch(err => {
