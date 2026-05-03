@@ -95,7 +95,6 @@ export const prepareDataForExport = (filteredInscriptions, activeTab, calcularCa
                 'Hermanos en Club': inscription.hermanosEnClub ? 'Sí' : 'No',
                 'Lotería': inscription.loteria ? 'Sí' : 'No',
                 'Beneficios': inscription.beneficios ? 'Sí' : 'No',
-                'Lotería': inscription.loteria ? 'Sí' : 'No',
                 'Nombre Padre/Tutor': inscription.padre?.nombre || '-',
                 'Apellidos Padre/Tutor': inscription.padre?.apellidos || '-',
                 'Teléfono Padre/Tutor': inscription.padre?.telefono || '-',
@@ -150,5 +149,95 @@ export const exportToExcelByCategories = (groupedData, fileName = 'inscripciones
 
         const timestamp = new Date().toLocaleString('es-ES').replace(/[\/:]/g, '-');
         XLSX.writeFile(wb, `${fileName}_${timestamp}.xlsx`);
+    });
+};
+
+export const exportDatabaseToExcel = (inscriptions, fileName = 'base_de_datos_meliana_cf') => {
+    import('xlsx').then(XLSX => {
+        const wb = XLSX.utils.book_new();
+
+        // --- Hoja 1: Datos Completos ---
+        const completeData = inscriptions.map(inscription => ({
+            'Código': inscription.codigoInscripcion,
+            'Nombre': inscription.nombreNino,
+            'Apellidos': inscription.apellidos,
+            'DNI': inscription.dni,
+            'Fecha Nacimiento': inscription.fechaNacimiento,
+            'Categoría': inscription.categoria,
+            'Dirección': inscription.direccion,
+            'Población': inscription.poblacion,
+            'CP': inscription.cp,
+            'Teléfono': inscription.telefono,
+            'Nacionalidad': inscription.nacionalidad,
+            'Lugar de Nacimiento': inscription.lugarNacimiento,
+            'Sexo': inscription.sexo || '-',
+            'Hermanos en Club': inscription.hermanosEnClub ? 'Sí' : 'No',
+            'Participa Lotería': inscription.loteria ? 'Sí' : 'No',
+            'Nombre Padre/Tutor': inscription.padre?.nombre || '-',
+            'Apellidos Padre/Tutor': inscription.padre?.apellidos || '-',
+            'Teléfono Padre/Tutor': inscription.padre?.telefono || '-',
+            'Email Padre/Tutor': inscription.padre?.email || '-',
+            'DNI Padre/Tutor': inscription.padre?.dni || '-',
+            'Parentesco': inscription.padre?.parentesco || '-',
+            'Nombre Banco': inscription.banco?.nombre || '-',
+            'IBAN': inscription.banco?.iban || '-',
+            'Fecha Inscripción': inscription.createdAt && inscription.createdAt.seconds 
+                ? new Date(inscription.createdAt.seconds * 1000).toLocaleDateString('es-ES') 
+                : '-',
+        }));
+        
+        const wsComplete = XLSX.utils.json_to_sheet(completeData);
+        if (completeData.length > 0) {
+            const maxWidth = 50;
+            const colWidths = Object.keys(completeData[0]).map(key => {
+                const maxLen = Math.max(
+                    key.length,
+                    ...completeData.map(item => String(item[key] || '').length)
+                );
+                return { wch: Math.min(maxLen + 2, maxWidth) };
+            });
+            wsComplete['!cols'] = colWidths;
+        }
+        XLSX.utils.book_append_sheet(wb, wsComplete, 'Datos Completos');
+
+        // --- Hoja 2: Ingresos ---
+        const ingresosData = inscriptions.map(inscription => {
+            const pagos = inscription.pagos || {};
+            const data = {
+                'ID': inscription.codigoInscripcion,
+                'Nombre': inscription.nombreNino,
+                'Equipo': inscription.categoria,
+                'Hermanos': inscription.hermanosEnClub ? 'Sí' : 'No',
+                'Lotería': inscription.loteria ? 'Sí' : 'No',
+                'IBAN': inscription.banco?.iban || '-',
+                'Pago contado': pagos.contado || " ",
+                'Inscripción': pagos.inscripcion || 0,
+            };
+            for (let i = 1; i <= 9; i++) {
+                data[`Cuota ${i}`] = pagos[`cuota_${i}`] || 0;
+            }
+            data['Pago Lotería'] = pagos.cuota_loteria || 0;
+            return data;
+        });
+
+        const wsIngresos = XLSX.utils.json_to_sheet(ingresosData);
+        if (ingresosData.length > 0) {
+            const maxWidth = 50;
+            const colWidths = Object.keys(ingresosData[0]).map(key => {
+                const maxLen = Math.max(
+                    key.length,
+                    ...ingresosData.map(item => String(item[key] || '').length)
+                );
+                return { wch: Math.min(maxLen + 2, maxWidth) };
+            });
+            wsIngresos['!cols'] = colWidths;
+        }
+        XLSX.utils.book_append_sheet(wb, wsIngresos, 'Ingresos');
+
+        const timestamp = new Date().toLocaleString('es-ES').replace(/[\/:]/g, '-');
+        XLSX.writeFile(wb, `${fileName}_${timestamp}.xlsx`);
+    }).catch(err => {
+        console.error('Error al exportar a Excel:', err);
+        alert('Error al exportar a Excel. Intenta de nuevo.');
     });
 };

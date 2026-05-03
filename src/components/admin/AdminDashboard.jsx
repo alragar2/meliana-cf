@@ -219,7 +219,7 @@ const AdminDashboard = ({ user, onLogout }) => {
                                 </button>
                                 <button
                                     className="btn-export-excel"
-                                    onClick={() => handleExportDB(filteredInscriptions, calcularCategoria, formatTimestamp)  }
+                                    onClick={() => handleExportDB(filteredInscriptions)  }
                                     title="Descargar como Excel"    
                                 >
                                     <i className="fas fa-file-excel"></i>

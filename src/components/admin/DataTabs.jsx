@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { exportToExcel, prepareDataForExport, exportToExcelByCategories } from '../../utils/excelExporter';
+import { exportToExcel, prepareDataForExport, exportToExcelByCategories, exportDatabaseToExcel } from '../../utils/excelExporter';
 import { savePaymentToFirestore } from '../../firebase/modify-db';
 import EditInscriptionModal from './EditInscriptionModal';
 import '../../css/dataTabs.css';
@@ -28,13 +28,12 @@ export const handleExportExcel = (filteredInscriptions, activeTab, calcularCateg
 
 };
 
-export const handleExportDB = (inscriptions, calcularCategoria, formatTimestamp) => {
+export const handleExportDB = (inscriptions) => {
     if (inscriptions.length === 0) {
         alert('No hay datos para exportar');
         return;
     }
-    const data = prepareDataForExport(inscriptions, 'complete', calcularCategoria, formatTimestamp);
-    exportToExcel(data, `Inscripciones_Completa`);
+    exportDatabaseToExcel(inscriptions, `base_de_datos_meliana_cf_2026_2027`);
 };
 
 const DataTabs = ({ activeTab, onTabChange, filteredInscriptions, formatTimestamp, calcularCategoria }) => {
