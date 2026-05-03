@@ -1,6 +1,7 @@
-import React, { useState, useEffect }from 'react';
+import React, { useState, useEffect } from 'react';
 import { exportToExcel, prepareDataForExport, exportToExcelByCategories } from '../../utils/excelExporter';
 import { savePaymentToFirestore } from '../../firebase/modify-db';
+import EditInscriptionModal from './EditInscriptionModal';
 import '../../css/dataTabs.css';
 
 export const handleExportExcel = (filteredInscriptions, activeTab, calcularCategoria, formatTimestamp) => {
@@ -8,24 +9,23 @@ export const handleExportExcel = (filteredInscriptions, activeTab, calcularCateg
         alert('No hay datos para exportar');
         return;
     }
-
     const tabNames = { 'player': 'Jugadores', 'parent': 'Padres', 'payment': 'Pagos', 'personal-data-player': 'Datos Personales Jugadores' };
 
-        const dataAgrupada = {};
+    const dataAgrupada = {};
 
-        filteredInscriptions.forEach(inscription => {
-            const cat = calcularCategoria(inscription.fechaNacimiento) || 'Sin Categoría';
-            if (!dataAgrupada[cat]) dataAgrupada[cat] = [];
+    filteredInscriptions.forEach(inscription => {
+        const cat = calcularCategoria(inscription.fechaNacimiento) || 'Sin Categoría';
+        if (!dataAgrupada[cat]) dataAgrupada[cat] = [];
 
-            dataAgrupada[cat].push({
-                'Nombre': inscription.nombreNino + ' ' + inscription.apellidos,
-                'Año': inscription.fechaNacimiento?.split('-')[0],
-                'Dorsal': " " 
-            });
+        dataAgrupada[cat].push({
+            'Nombre': inscription.nombreNino + ' ' + inscription.apellidos,
+            'Año': inscription.fechaNacimiento?.split('-')[0],
+            'Dorsal': " "
         });
+    });
 
-        exportToExcelByCategories(dataAgrupada, `Inscripciones_Jugadores_Por_Categoria`);
-    
+    exportToExcelByCategories(dataAgrupada, `Inscripciones_Jugadores_Por_Categoria`);
+
 };
 
 export const handleExportDB = (inscriptions, calcularCategoria, formatTimestamp) => {
@@ -36,10 +36,33 @@ export const handleExportDB = (inscriptions, calcularCategoria, formatTimestamp)
     const data = prepareDataForExport(inscriptions, 'complete', calcularCategoria, formatTimestamp);
     exportToExcel(data, `Inscripciones_Completa`);
 };
-    
+
 const DataTabs = ({ activeTab, onTabChange, filteredInscriptions, formatTimestamp, calcularCategoria }) => {
 
     const [localInscriptions, setLocalInscriptions] = useState(filteredInscriptions);
+    const [editModalOpen, setEditModalOpen] = useState(false);
+    const [selectedPlayer, setSelectedPlayer] = useState(null);
+
+    const handleEditClick = (inscription) => {
+        setSelectedPlayer(inscription);
+        setEditModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setEditModalOpen(false);
+        setSelectedPlayer(null);
+    };
+
+    const handleEditSave = (updatedInscription) => {
+        setLocalInscriptions(prevInscriptions =>
+            prevInscriptions.map(ins =>
+                ins.id === updatedInscription.id
+                    ? { ...ins, ...updatedInscription }
+                    : ins
+            )
+        );
+        handleCloseModal();
+    };
 
     useEffect(() => {
         setLocalInscriptions(filteredInscriptions);
@@ -48,15 +71,15 @@ const DataTabs = ({ activeTab, onTabChange, filteredInscriptions, formatTimestam
     const handleSave = async (id, campo, valor) => {
         // Buscamos los pagos actuales para pasarlos a la función
         const inscripcion = localInscriptions.find(ins => ins.id === id);
-        
+
         try {
             const result = await savePaymentToFirestore(id, campo, valor, inscripcion.pagos);
             if (result.success) {
                 // Actualizar el total pagado en el estado local para que se refleje inmediatamente
-                setLocalInscriptions(prevInscriptions => 
-                    prevInscriptions.map(ins => 
-                        ins.id === id 
-                            ? { ...ins, totalPagado: result.nuevoTotalPagado } 
+                setLocalInscriptions(prevInscriptions =>
+                    prevInscriptions.map(ins =>
+                        ins.id === id
+                            ? { ...ins, totalPagado: result.nuevoTotalPagado }
                             : ins
                     )
                 );
@@ -86,7 +109,7 @@ const DataTabs = ({ activeTab, onTabChange, filteredInscriptions, formatTimestam
         { id: 'cuotes_payment', icon: 'fas fa-money-bill-wave', label: 'Pagos de cuotas' }
     ];
 
-    
+
 
     return (
         <>
@@ -128,7 +151,7 @@ const DataTabs = ({ activeTab, onTabChange, filteredInscriptions, formatTimestam
                                 </tr>
                             </thead>
                             <tbody>
-                                {filteredInscriptions.map((inscription) => (
+                                {localInscriptions.map((inscription) => (
                                     <tr key={inscription.id} style={{ borderBottom: '1px solid #ddd' }}>
                                         <td style={{ padding: '12px 8px' }}>{inscription.codigoInscripcion}</td>
                                         <td style={{ padding: '12px 8px' }}>{inscription.nombreNino}</td>
@@ -136,19 +159,35 @@ const DataTabs = ({ activeTab, onTabChange, filteredInscriptions, formatTimestam
                                         <td style={{ padding: '12px 8px' }}>{inscription.dni}</td>
                                         <td style={{ padding: '12px 8px' }}>{inscription.fechaNacimiento}</td>
                                         <td style={{ padding: '12px 8px' }}>
-                                            <span style={{ 
-                                                backgroundColor: '#e3f2fd', 
-                                                color: '#1976d2', 
-                                                padding: '4px 8px', 
-                                                borderRadius: '12px', 
-                                                fontSize: '0.85rem', 
-                                                fontWeight: '500' 
+                                            <span style={{
+                                                backgroundColor: '#e3f2fd',
+                                                color: '#1976d2',
+                                                padding: '4px 8px',
+                                                borderRadius: '12px',
+                                                fontSize: '0.85rem',
+                                                fontWeight: '500'
                                             }}>
                                                 {inscription.categoria || calcularCategoria(inscription.fechaNacimiento)}
                                             </span>
                                         </td>
                                         <td style={{ padding: '12px 8px' }}>{inscription.totalAPagar}€</td>
                                         <td style={{ padding: '12px 8px' }}>{formatTimestamp(inscription.createdAt)}</td>
+                                        <td>
+                                            <button
+                                                onClick={() => handleEditClick(inscription)}
+                                                title="Editar inscripción"
+                                                style={{
+                                                    backgroundColor: '#dddddd',
+                                                    color: '#fff',
+                                                    border: 'none',
+                                                    cursor: 'pointer',
+                                                    fontSize: '0.85rem',
+                                                    fontWeight: '500'
+                                                }}
+                                            >
+                                                ✏️
+                                            </button>
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -168,7 +207,7 @@ const DataTabs = ({ activeTab, onTabChange, filteredInscriptions, formatTimestam
                                 </tr>
                             </thead>
                             <tbody>
-                                {filteredInscriptions.map((inscription) => (
+                                {localInscriptions.map((inscription) => (
                                     <tr key={inscription.id} style={{ borderBottom: '1px solid #ddd' }}>
                                         <td style={{ padding: '12px 8px' }}>{inscription.codigoInscripcion}</td>
                                         <td style={{ padding: '12px 8px' }}>{inscription.nombreNino} {inscription.apellidos}</td>
@@ -191,11 +230,12 @@ const DataTabs = ({ activeTab, onTabChange, filteredInscriptions, formatTimestam
                                     <th style={{ padding: '12px 8px' }}>Nombre Banco</th>
                                     <th style={{ padding: '12px 8px' }}>IBAN</th>
                                     <th style={{ padding: '12px 8px' }}>Lotería</th>
+                                    <th style={{ padding: '12px 8px' }}>Hermanos</th>
                                     <th style={{ padding: '12px 8px' }}>Total a Pagar</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {filteredInscriptions.map((inscription) => (
+                                {localInscriptions.map((inscription) => (
                                     <tr key={inscription.id} style={{ borderBottom: '1px solid #ddd' }}>
                                         <td style={{ padding: '12px 8px' }}>{inscription.codigoInscripcion}</td>
                                         <td style={{ padding: '12px 8px' }}>{inscription.nombreNino} {inscription.apellidos}</td>
@@ -205,9 +245,22 @@ const DataTabs = ({ activeTab, onTabChange, filteredInscriptions, formatTimestam
                                             <span style={{
                                                 backgroundColor: inscription.loteria ? '#c8e6c9' : '#ffcdd2',
                                                 color: inscription.loteria ? '#2e7d32' : '#c62828',
+                                                padding: '4px 8px',
+                                                borderRadius: '8px',
                                                 padding: '4px 8px'
-                                                }}>
+                                            }}>
                                                 {inscription.loteria ? 'Sí' : 'No'}
+                                            </span>
+                                        </td>
+                                        <td style={{ padding: '12px 8px' }}>
+                                            <span style={{
+                                                backgroundColor: inscription.hermanosEnClub ? '#c8e6c9' : '#ffcdd2',
+                                                color: inscription.hermanosEnClub ? '#2e7d32' : '#c62828',
+                                                padding: '4px 8px',
+                                                borderRadius: '8px',
+                                                padding: '4px 8px'
+                                            }}>
+                                                {inscription.hermanosEnClub ? 'Sí' : 'No'}
                                             </span>
                                         </td>
                                         <td style={{ padding: '12px 8px' }}>{inscription.totalAPagar}€</td>
@@ -231,7 +284,7 @@ const DataTabs = ({ activeTab, onTabChange, filteredInscriptions, formatTimestam
                                 </tr>
                             </thead>
                             <tbody>
-                                {filteredInscriptions.map((inscription) => (
+                                {localInscriptions.map((inscription) => (
                                     <tr key={inscription.id} style={{ borderBottom: '1px solid #ddd' }}>
                                         <td style={{ padding: '12px 8px' }}>{inscription.codigoInscripcion}</td>
                                         <td style={{ padding: '12px 8px' }}>{inscription.nombreNino} {inscription.apellidos}</td>
@@ -276,7 +329,7 @@ const DataTabs = ({ activeTab, onTabChange, filteredInscriptions, formatTimestam
                                         {/* Campo Inscripción Editable */}
                                         <td style={{ padding: '4px' }}>
                                             <div className="cuota-cell-container">
-                                                <input 
+                                                <input
                                                     type="number"
                                                     value={inscription.pagos?.inscripcion || 0}
                                                     className="input-cuota"
@@ -291,13 +344,13 @@ const DataTabs = ({ activeTab, onTabChange, filteredInscriptions, formatTimestam
                                         {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
                                             <td key={num} style={{ padding: '4px' }}>
                                                 <div className="cuota-cell-container">
-                                                    <input 
+                                                    <input
                                                         type="number"
                                                         value={inscription.pagos?.[`cuota_${num}`] || 0}
                                                         className="input-cuota"
                                                         onChange={(e) => handleInputChange(inscription.id, `cuota_${num}`, e.target.value)}
                                                         onBlur={(e) => handleSave(inscription.id, `cuota_${num}`, e.target.value)}
-                                                    /> 
+                                                    />
                                                     <span>€</span>
                                                 </div>
                                             </td>
@@ -305,7 +358,7 @@ const DataTabs = ({ activeTab, onTabChange, filteredInscriptions, formatTimestam
 
                                         <td style={{ padding: '4px' }}>
                                             <div className="cuota-cell-container">
-                                                <input 
+                                                <input
                                                     type="number"
                                                     value={inscription.pagos?.cuota_loteria || 0}
                                                     className="input-cuota"
@@ -320,7 +373,7 @@ const DataTabs = ({ activeTab, onTabChange, filteredInscriptions, formatTimestam
                                                 backgroundColor: inscription.loteria ? '#c8e6c9' : '#ffcdd2',
                                                 color: inscription.loteria ? '#2e7d32' : '#c62828',
                                                 padding: '4px 8px'
-                                                }}>
+                                            }}>
                                                 {inscription.loteria ? 'Sí' : 'No'}
                                             </span>
                                         </td>
@@ -333,6 +386,12 @@ const DataTabs = ({ activeTab, onTabChange, filteredInscriptions, formatTimestam
                     )}
                 </table>
             )}
+            <EditInscriptionModal
+                isVisible={editModalOpen}
+                onClose={handleCloseModal}
+                inscription={selectedPlayer}
+                onSave={handleEditSave}
+            />
         </>
     );
 };

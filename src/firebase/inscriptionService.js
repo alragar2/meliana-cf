@@ -124,6 +124,82 @@ export const inscriptionService = {
     }
   },
 
+  // Actualizar una inscripción completa
+  async updateInscription(inscriptionId, formData) {
+    console.log('🔥 [Firebase Service] Iniciando updateInscription...');
+    console.log('📊 [Firebase Service] ID de inscripción:', inscriptionId);
+    console.log('📝 [Firebase Service] Datos para actualizar:', formData);
+
+    try {
+      if (!db) {
+        throw new Error('Base de datos Firestore no inicializada');
+      }
+      if (!inscriptionId) {
+        throw new Error('ID de inscripción no proporcionado');
+      }
+
+      // Re-calcular categoría y total a pagar por si cambiaron datos clave
+      const categoria = calcularCategoria(formData.fechaNacimiento, formData.sexo);
+      const totalAPagar = calculatePagosTotales(categoria, formData.loteria, formData.hermanosEnClub);
+
+      // Estructurar los datos como en el modelo de la base de datos
+      const dataToUpdate = {
+        nombreNino: formData.nombreNino,
+        apellidos: formData.apellidos,
+        fechaNacimiento: formData.fechaNacimiento,
+        direccion: formData.direccion,
+        poblacion: formData.poblacion,
+        dni: formData.dni,
+        cp: formData.cp,
+        telefono: formData.telefono,
+        nacionalidad: formData.nacionalidad,
+        lugarNacimiento: formData.lugarNacimiento,
+        sexo: formData.sexo,
+        hermanosEnClub: formData.hermanosEnClub,
+        loteria: formData.loteria,
+        
+        padre: {
+            nombre: formData.nombrePadre,
+            apellidos: formData.apellidosPadre,
+            telefono: formData.telefonoPadre,
+            email: formData.correoPadre,
+            dni: formData.dniPadre,
+            parentesco: formData.parentesco,
+        },
+
+        banco: {
+            nombre: formData.nombreBanco,
+            iban: formData.iban,
+        },
+
+        categoria: categoria,
+        totalAPagar: totalAPagar,
+
+        fechaActualizacion: Timestamp.now(),
+      };
+
+      console.log('💾 [Firebase Service] Datos finales a actualizar:', dataToUpdate);
+
+      const inscriptionRef = doc(db, COLLECTION_NAME, inscriptionId);
+      await updateDoc(inscriptionRef, dataToUpdate);
+
+      console.log('✅ [Firebase Service] Inscripción actualizada correctamente:', inscriptionId);
+      
+      return {
+        success: true,
+        message: 'Inscripción actualizada correctamente'
+      };
+
+    } catch (error) {
+      console.error('💥 [Firebase Service] Error al actualizar inscripción:', error);
+      return {
+        success: false,
+        error: error.message,
+        message: 'Error al actualizar la inscripción. Por favor, inténtalo de nuevo.'
+      };
+    }
+  },
+
   // Actualizar estado de una inscripción
   async updateInscriptionStatus(inscriptionId, newStatus) {
     try {
