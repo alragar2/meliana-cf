@@ -5,29 +5,34 @@ const Gallery = () => {
   
   const slides = [
     {
-      image: "/images/gallery-childs.jpg",
+      image: "/images/gallery_campeones.jpg",
       title: "Momentos Especiales",
       alt: "Momentos Especiales"
     },
     {
-      image: "/images/gallery-levante.jpeg", 
-      title: "Visitas de profesionales",
-      alt: "Visitas de profesionales"
+      image: "/images/gallery_cara.jpg", 
+      title: "Pasión por el Fútbol",
+      alt: "Pasión por el Fútbol"
     },
     {
-      image: "/images/gallery-equipo.jpeg",
+      image: "/images/gallery_junte.webp",
       title: "Compañerismo",
       alt: "Compañerismo"
     },
     {
-      image: "/images/gallery-levante-borja.jpeg",
-      title: "Entrenamiento con profesionales",
-      alt: "Entrenamiento con profesionales"
+      image: "/images/gallery_nino.jpg",
+      title: "Futuro Prometedor en el Fútbol",
+      alt: "Futuro Prometedor en el Fútbol"
     },
     {
-      image: "/images/gallery-esfuerzo.jpg",
-      title: "Esfuerzo",
-      alt: "Esfuerzo"
+      image: "/images/gallery_regate_2.webp",
+      title: "Habilidad y Técnica",
+      alt: "Habilidad y Técnica"
+    },
+    {
+      image: "/images/gallery_regate.jpg",
+      title: "Regate en Acción",
+      alt: "Regate en Acción"
     }
   ];
 

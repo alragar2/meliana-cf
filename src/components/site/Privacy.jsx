@@ -9,7 +9,7 @@ const Privacy = () => {
           
           <div className="privacy-section">
             <p>
-              En Inter9 Soccer Academy, respetamos tu privacidad y estamos 
+              En Meliana CF, respetamos tu privacidad y estamos 
               comprometidos con la protección de tus datos personales.
             </p>
           </div>

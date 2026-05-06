@@ -4,7 +4,7 @@
     position: fixed;
     top: 0;
     width: 100%;
-    background: rgba(255, 255, 255, 0.95);
+    background: var(--primary-color);
     backdrop-filter: blur(10px);
     z-index: 1000;
     transition: var(--transition);
@@ -27,7 +27,13 @@
 .nav-logo {
     display: flex;
     align-items: center;
+}
+
+.logo-link {
+    display: flex;
+    align-items: center;
     gap: 12px;
+    text-decoration: none;
 }
 
 .logo {
@@ -40,7 +46,7 @@
 .logo-text {
     font-weight: 600;
     font-size: 1.2rem;
-    color: var(--primary-color);
+    color: var(--light-color);
 }
 
 .nav-menu {
@@ -51,14 +57,14 @@
 
 .nav-link {
     text-decoration: none;
-    color: var(--text-color);
+    color: var(--light-color);
     font-weight: 500;
     transition: var(--transition);
     position: relative;
 }
 
 .nav-link:hover {
-    color: var(--primary-color);
+    color: var(--secondary-color);
 }
 
 .nav-link::after {

@@ -5,7 +5,7 @@ const Hero = () => {
     <section id="hero" className="hero">
       <div className="hero-content">
         <div className="hero-text">
-          <h1>Inter9 Soccer Academy</h1>
+          <h1>Meliana CF</h1>
           <p>
             Descubre tu potencial en el fútbol con nuestra academia de élite. 
             Entrenamiento profesional, instalaciones de primera clase y un ambiente 
@@ -16,12 +16,12 @@ const Hero = () => {
               Inscríbete Ahora
             </a>
             <a href="#about" className="btn btn-outline btn-lg">
-              Conoce Más
+              Sobre Nosotros
             </a>
           </div>
         </div>
         <div className="hero-image">
-          <img src="\images\logo-inter9.png" alt="Inter9 Soccer Academy" />
+          <img src="\images\melianacf-logo.png" alt="Meliana CF" />
         </div>
       </div>
     </section>

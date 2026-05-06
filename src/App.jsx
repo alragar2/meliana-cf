@@ -23,12 +23,8 @@ const HomePage = () => (
   <>
     <Header />
     <Hero />
-    <Schedule />
-    <Gallery />
-    <VideoSection />
-    <Pricing />
-    <Equipment />
     <Inscription />
+    <Gallery />
     <About />
     <Privacy />
     <Footer />

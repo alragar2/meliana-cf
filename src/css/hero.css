@@ -2,7 +2,7 @@
 .hero {
   background: 
     linear-gradient(135deg, rgba(26, 26, 46, 0.8) 0%, rgba(15, 15, 35, 0.8) 100%),
-    url('/images/background-inter9.jpeg') center/cover no-repeat;
+    url('/images/fondo_hero.png') center/cover no-repeat;
   color: var(--white);
   min-height: 100vh;
   display: flex;

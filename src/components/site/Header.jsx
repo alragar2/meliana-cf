@@ -6,13 +6,13 @@ const Header = () => {
       <nav className="navbar">
         <div className="nav-container">
           <div className="nav-logo">
-            <img src="/images/logo-inter9.png" alt="Inter9 Logo" className="logo" />
-            <span className="logo-text">Inter9 Soccer Academy</span>
+            <a href="#hero" className="logo-link">
+              <img src="/images/melianacf-logo.png" alt="Meliana CF" className="logo" />
+              <span className="logo-text">Meliana CF</span>
+            </a>
           </div>
           <ul className="nav-menu">
             <li><a href="#hero" className="nav-link">Inicio</a></li>
-            <li><a href="#pricing" className="nav-link">Precios</a></li>
-            <li><a href="#equipacion" className="nav-link">Equipación</a></li>
             <li><a href="#inscripcion" className="nav-link">Inscripción</a></li>
             <li><a href="#about" className="nav-link">Sobre nosotros</a></li>
           </ul>

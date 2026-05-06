@@ -7,29 +7,21 @@ const About = () => {
         <h2 className="text-center mb-12">Sobre Nosotros</h2>
         <div className="about-content">
           <p>
-            Inter9 Soccer Academy es una academia de fútbol comprometida con la 
-            formación integral de jóvenes futbolistas. Nuestro objetivo es desarrollar 
-            las habilidades técnicas y tácticas de nuestros jugadores.
+            El Meliana Club de Fútbol es una entidad deportiva dedicada a la formación, 
+            competición y promoción del fútbol en Meliana. Desde nuestros inicios, hemos sido 
+            un punto de encuentro para jugadores, familias y aficionados que comparten la pasión por este deporte.
           </p>
           <p>
-            Con más de 10 años de experiencia, hemos formado a cientos de jugadores 
-            que han continuado su carrera en equipos profesionales y semi-profesionales. 
-            Nuestro enfoque se basa en la excelencia, el respeto y la pasión por el fútbol.
+            Fundado en 1966, el club ha crecido desde un equipo local hasta convertirse en un referente del fútbol 
+            base en la comarca. A lo largo de los años, hemos formado a numerosos jugadores y hemos vivido momentos 
+            inolvidables tanto dentro como fuera del campo.
           </p>
-          <div className="about-stats">
-            <div className="stat">
-              <h3>+200</h3>
-              <p>Jugadores Formados</p>
-            </div>
-            <div className="stat">
-              <h3>6</h3>
-              <p>Entrenadores Profesionales</p>
-            </div>
-            <div className="stat">
-              <h3>+3</h3>
-              <p>Años de Experiencia</p>
-            </div>
-          </div>
+          <p>
+            Nuestra misión es formar personas a través del deporte, fomentando valores como el respeto, el esfuerzo, el compañerismo y la disciplina.
+          </p>
+          <p>
+            Aspiramos a seguir creciendo como club, mejorando nuestras instalaciones y ofreciendo oportunidades a todos los jóvenes de Meliana que quieran disfrutar del fútbol.
+          </p>
         </div>
       </div>
     </section>

@@ -2,14 +2,14 @@
 
 .registration {
     padding: 80px 0;
-    background: var(--gradient-primary);
-    color: white;
+    background: var(--gradient-light);
+    color: var(--primary-color);
     text-align: center;
 }
 
 .registration .section-title {
-    color: white;
-    -webkit-text-fill-color: white;
+    color: var(--primary-color);
+    -webkit-text-fill-color: var(--primary-color);
 }
 
 .registration-content {
@@ -23,15 +23,15 @@
     max-width: 600px;
     margin-left: auto;
     margin-right: auto;
-    color: white;
+    color: var(--text-color);
 }
 
 .btn-registration {
     display: inline-flex;
     align-items: center;
     gap: 12px;
-    background: white;
-    color: var(--primary-color);
+    background: var(--primary-color);
+    color: var(--light-color);
     padding: 16px 32px;
     border-radius: var(--border-radius);
     text-decoration: none;
