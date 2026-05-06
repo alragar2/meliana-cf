@@ -245,8 +245,7 @@ const DataTabs = ({ activeTab, onTabChange, filteredInscriptions, formatTimestam
                                                 backgroundColor: inscription.loteria ? '#c8e6c9' : '#ffcdd2',
                                                 color: inscription.loteria ? '#2e7d32' : '#c62828',
                                                 padding: '4px 8px',
-                                                borderRadius: '8px',
-                                                padding: '4px 8px'
+                                                borderRadius: '8px'
                                             }}>
                                                 {inscription.loteria ? 'Sí' : 'No'}
                                             </span>
@@ -256,8 +255,7 @@ const DataTabs = ({ activeTab, onTabChange, filteredInscriptions, formatTimestam
                                                 backgroundColor: inscription.hermanosEnClub ? '#c8e6c9' : '#ffcdd2',
                                                 color: inscription.hermanosEnClub ? '#2e7d32' : '#c62828',
                                                 padding: '4px 8px',
-                                                borderRadius: '8px',
-                                                padding: '4px 8px'
+                                                borderRadius: '8px'
                                             }}>
                                                 {inscription.hermanosEnClub ? 'Sí' : 'No'}
                                             </span>
