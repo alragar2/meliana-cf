@@ -1,15 +1,27 @@
 import React, { useState } from 'react';
 import InscriptionForm from './InscriptionForm';
+import ConfirmationPage from './ConfirmationPage';
 
 const Registration = () => {
-  const [showForm, setShowForm] = useState(false);
+  const [inscriptionStep, setInscriptionStep] = useState('closed'); // 'closed', 'form', 'confirmation'
+  const [submittedData, setSubmittedData] = useState(null);
 
   const handleRegistrationClick = () => {
-    setShowForm(!showForm);
+    setInscriptionStep(inscriptionStep === 'closed' ? 'form' : 'closed');
   };
 
   const handleCloseForm = () => {
-    setShowForm(false);
+    setInscriptionStep('closed');
+  };
+
+  const handleFormSuccess = (formData) => {
+    setSubmittedData(formData);
+    setInscriptionStep('confirmation');
+  };
+
+  const handleConfirmationEnd = () => {
+    setInscriptionStep('closed');
+    alert('¡Proceso completado! Gracias por tu inscripción. Nos pondremos en contacto contigo pronto.');
   };
 
   return (
@@ -23,13 +35,20 @@ const Registration = () => {
             className="btn-registration"
           >
             <i className="fas fa-edit"></i>
-            {showForm ? 'Cerrar Formulario' : 'Formulario de Inscripción'}
+            {inscriptionStep !== 'closed' ? 'Cerrar Proceso' : 'Formulario de Inscripción'}
           </button>
           
-          <InscriptionForm 
-            isVisible={showForm} 
-            onClose={handleCloseForm}
-          />
+          {inscriptionStep === 'form' && (
+            <InscriptionForm 
+              isVisible={true} 
+              onClose={handleCloseForm}
+              onSuccess={handleFormSuccess}
+            />
+          )}
+
+          {inscriptionStep === 'confirmation' && (
+            <ConfirmationPage onConfirm={handleConfirmationEnd} inscriptionData={submittedData} />
+          )}
           
           <p className="registration-note">
             Tras completar el formulario, realice el pago según las instrucciones para confirmar la plaza.

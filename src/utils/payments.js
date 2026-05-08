@@ -28,7 +28,7 @@ export const calculatePagosTotales = (categoria, loteria, hermanosEnClub) => {
     let pago = 0;
     switch (categoria) {
         case 'QUERUBÍN':
-            pago = 180;
+            pago = 225;
             break;
         case 'PREBE':
         case 'BENJAMÍN 1 AÑO':
@@ -37,18 +37,19 @@ export const calculatePagosTotales = (categoria, loteria, hermanosEnClub) => {
         case 'ALEVÍN 2 AÑO':
         case 'INFANTIL':
         case 'CADETE':
-            pago = 480;
+            pago = 520;
             break;
         case 'JUVENIL':
-            pago = 435;
+            pago = 470;
             break;
         case 'FEMENINO':
-            pago = 390;
+            pago = 435;
             break;
         default:
             pago = 0;
              break;
     }
+    // Si el jugador no participa en la lotería, se le añade el coste de la lotería
     if (!loteria) {
         pago += 50;
     }

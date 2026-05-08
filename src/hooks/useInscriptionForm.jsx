@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { calculatePagosTotales } from '../utils/payments';
+import { calcularCategoria } from '../utils/categories';
 
 const defaultInitialForm = {
     nombreNino: '',
@@ -31,6 +33,23 @@ export default function useInscriptionForm(initialValues = {}) {
     const [formData, setFormData] = useState({ ...defaultInitialForm, ...initialValues });
     const [touchedFields, setTouchedFields] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [totalAPagar, setTotalAPagar] = useState(0);
+
+    useEffect(() => {
+        const { fechaNacimiento, sexo, loteria, hermanosEnClub } = formData;
+
+        if (fechaNacimiento && sexo) {
+            try {
+                const categoria = calcularCategoria(fechaNacimiento, sexo);
+                const total = calculatePagosTotales(categoria, loteria, hermanosEnClub);
+                setTotalAPagar(total);
+            } catch (e) {
+                setTotalAPagar(0);
+            }
+        } else {
+            setTotalAPagar(0);
+        }
+    }, [formData.fechaNacimiento, formData.sexo, formData.loteria, formData.hermanosEnClub]);
 
     const isFieldInvalid = (fieldName, fieldValue) => {
         // Para campos requeridos, verificar si está vacío
@@ -90,6 +109,7 @@ export default function useInscriptionForm(initialValues = {}) {
         handleInputChange,
         handleBlur,
         handleFocus,
-        resetForm
+        resetForm,
+        totalAPagar
     };
 }

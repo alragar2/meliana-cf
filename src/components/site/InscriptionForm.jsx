@@ -4,7 +4,7 @@ import { horariosDisponibles } from '../../utils/horariosConfig';
 import FormField from './FormField';
 import useInscriptionForm from '../../hooks/useInscriptionForm';
 
-const InscriptionForm = ({ isVisible, onClose }) => {
+const InscriptionForm = ({ isVisible, onClose, onSuccess }) => {
 
     const {
         formData,
@@ -17,7 +17,8 @@ const InscriptionForm = ({ isVisible, onClose }) => {
         handleInputChange,
         handleBlur,
         handleFocus,
-        resetForm
+        resetForm,
+        totalAPagar
     } = useInscriptionForm();
 
     const handleSubmit = async (e) => {
@@ -38,13 +39,9 @@ const InscriptionForm = ({ isVisible, onClose }) => {
             const result = await inscriptionService.createInscription(formData);
 
             if (result.success) {
-                alert('¡Inscripción enviada correctamente! Nos pondremos en contacto contigo pronto.');
-
-                // Reset form
+                // Notificar al componente padre que fue exitoso
+                onSuccess(formData);
                 resetForm();
-
-                // Cerrar el formulario
-                onClose();
             } else {
                 alert('Error: ' + result.message);
             }
@@ -358,6 +355,14 @@ const InscriptionForm = ({ isVisible, onClose }) => {
                         />
                     </div>
                 </div>
+
+                {totalAPagar > 0 && (
+                    <div className="form-section total-preview" style={{ textAlign: 'center', backgroundColor: '#f8f9fa', padding: '1.5rem', borderRadius: '8px' }}>
+                        <h4>Total a pagar</h4>
+                        <p className="total-amount" style={{ fontSize: '2.2rem', fontWeight: 'bold', color: '#1a73e8', margin: '0.5rem 0' }}>{totalAPagar}€</p>
+                        <small>Este importe es una estimación. El total final se confirmará al procesar la inscripción.</small>
+                    </div>
+                )}
 
                 <div className="form-actions">
                     <button
