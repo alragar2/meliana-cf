@@ -24,8 +24,10 @@ const Footer = () => {
           <div className="footer-section">
             <h3>Contacto</h3>
             <p><i className="fas fa-map-marker-alt"></i> Meliana, Valencia</p>
-            <p><i className="fas fa-envelope"></i> info@melianacf.com</p>
-            <p><i className="fas fa-phone"></i> +34 628 536 290</p>
+            <p><i className="fas fa-envelope"></i> <a href="mailto:documentacionmelianacf@gmail.com">documentacionmelianacf@gmail.com</a></p>
+            <p><i className="fas fa-phone"></i> <a href="tel:+34675616652">675 61 66 52</a></p>
+            <p><i className="fas fa-phone"></i> <a href="tel:+34675446007">675 44 60 07</a></p>
+            <p><i className="fas fa-phone"></i> <a href="tel:+34678987146">678 98 71 46</a></p>
           </div>
         </div>
         <div className="footer-bottom">
