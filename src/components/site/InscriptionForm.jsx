@@ -244,7 +244,7 @@ const InscriptionForm = ({ isVisible, onClose, onSuccess }) => {
                             </label>
                         </div>
                     </div>
-                    <p>Si activa la casilla y desea participar en la lotería de Navidad, se le entregarán 50 papeletas. Si no participa, se añadirán 50€ al total de la inscripción en concepto de no participación.</p>
+                    <p>Si activa la casilla, acepta participar en la lotería de Navidad y se le entregarán 50 papeletas. Si no participa, se añadirán 50€ al total de la inscripción en concepto de no participación.</p>
                 </div>
 
                 <div className="form-section">
