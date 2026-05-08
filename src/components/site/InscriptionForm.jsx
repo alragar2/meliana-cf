@@ -217,6 +217,7 @@ const InscriptionForm = ({ isVisible, onClose, onSuccess }) => {
 
                     <div className="form-row single-column">
                         <div className="form-group checkbox-group">
+
                             <label className="checkbox-label">
                                 <input
                                     type="checkbox"
@@ -227,9 +228,10 @@ const InscriptionForm = ({ isVisible, onClose, onSuccess }) => {
                                 ¿Tiene hermanos en el club?
                             </label>
                         </div>
+                        <p>El descuento se realizará en la inscripción 50€ por jugador (Querubínes y solo entrenamiento no entran en el descuento)</p>
                     </div>
 
-                    <div className="form-row checkbox-row">
+                    <div className="form-row single-column">
                         <div className="form-group checkbox-group">
                             <label className="checkbox-label">
                                 <input
@@ -242,6 +244,7 @@ const InscriptionForm = ({ isVisible, onClose, onSuccess }) => {
                             </label>
                         </div>
                     </div>
+                    <p>Si activa la casilla y desea participar en la lotería de Navidad, se le entregarán 50 papeletas. Si no participa, se añadirán 50€ al total de la inscripción en concepto de no participación.</p>
                 </div>
 
                 <div className="form-section">
@@ -320,10 +323,10 @@ const InscriptionForm = ({ isVisible, onClose, onSuccess }) => {
                             onBlur={handleBlur}
                             onFocus={handleFocus}
                         >
-                                <option value="">Seleccionar</option>
-                                <option value="Padre">Padre</option>
-                                <option value="Madre">Madre</option>
-                                <option value="Tutor">Tutor</option>
+                            <option value="">Seleccionar</option>
+                            <option value="Padre">Padre</option>
+                            <option value="Madre">Madre</option>
+                            <option value="Tutor">Tutor</option>
                         </FormField>
                     </div>
                 </div>
@@ -354,6 +357,15 @@ const InscriptionForm = ({ isVisible, onClose, onSuccess }) => {
                             onFocus={handleFocus}
                         />
                     </div>
+                </div>
+
+                <div className="form-section">
+                    <h4><i className="fas fa-users"></i> Cuenta del Meliana CF</h4>
+                    <p><strong>Titular:</strong> Meliana C.F.</p>
+                    <p><strong>Banco:</strong> Caixa Popular Coop. V.</p>
+                    <p><strong>IBAN:</strong> ES83 3159 0017 7120 2678 1829</p>
+                    <p><strong>NO SE ADMITEN PAGOS EN METÁLICO</strong></p>
+                    
                 </div>
 
                 {totalAPagar > 0 && (

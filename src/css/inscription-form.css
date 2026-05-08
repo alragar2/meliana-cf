@@ -59,7 +59,7 @@
 
 .form-row.single-column {
   grid-template-columns: 1fr;
-  max-width: 50%;
+  max-width: 100%;
 }
 
 .form-row.checkbox-row {

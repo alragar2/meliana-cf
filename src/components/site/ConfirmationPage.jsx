@@ -36,6 +36,11 @@ const ConfirmationPage = ({ onConfirm, inscriptionData }) => {
                 </div>
 
                 <div className="form-section">
+                    <h4><i className="fas fa-file-contract"></i> Admisión en la Escuela</h4>
+                    <p>Para ser admitido en la Escuela de Fútbol, el jugador deberá estar al corriente de pago en cuotas y lotería de campañas anteriores</p>
+                </div>
+
+                <div className="form-section">
                     <div className="form-row single-column">
                         <div className="form-group checkbox-group">
                             <label className="checkbox-label">
