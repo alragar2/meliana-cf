@@ -32,6 +32,9 @@ const Footer = () => {
         </div>
         <div className="footer-bottom">
           <p>&copy; 2026 Meliana CF. Todos los derechos reservados.</p>
+          <p>
+            Desarrollado por <a href="https://nubix.vercel.app/" target="_blank" rel="noopener noreferrer">Nubix</a>
+          </p>
         </div>
       </div>
     </footer>

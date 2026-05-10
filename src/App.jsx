@@ -17,6 +17,7 @@ import FAQ from './components/site/FAQ';
 import Privacy from './components/site/Privacy';
 import Footer from './components/site/Footer';
 import AdminPage from './components/admin/AdminPage';
+import Normativa from './components/site/Normativa';
 
 // Componente de la página principal
 const HomePage = () => (
@@ -26,7 +27,7 @@ const HomePage = () => (
     <Inscription />
     <Gallery />
     <About />
-    <Privacy />
+    <Normativa />
     <Footer />
   </>
 );

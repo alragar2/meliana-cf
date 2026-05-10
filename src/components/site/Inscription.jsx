@@ -29,7 +29,7 @@ const Registration = () => {
       <div className="container">
         <h2 className="section-title">¡Inscríbete Ya!</h2>
         <div className="registration-content">
-          <p>Complete el formulario de inscripción y asegure la plaza de su hijo/a en nuestra academia.</p>
+          <p>Aprovecha tu oportunidad y completa el formulario para formar parte de nuestro club.</p>
           <button 
             onClick={handleRegistrationClick} 
             className="btn-registration"
@@ -51,7 +51,7 @@ const Registration = () => {
           )}
           
           <p className="registration-note">
-            Tras completar el formulario, realice el pago según las instrucciones para confirmar la plaza.
+            Tras completar el formulario, la inscripción podrá abonarse mediante el número de cuenta indicado hasta el 30 de julio. Finalizado el plazo, el club procederá al cobro de la cuota correspondiente (120€). 
           </p>
         </div>
       </div>

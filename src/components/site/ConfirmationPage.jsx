@@ -41,6 +41,11 @@ const ConfirmationPage = ({ onConfirm, inscriptionData }) => {
                 </div>
 
                 <div className="form-section">
+                    <h4><i className="fas fa-user-times"></i> Baja federativa</h4>
+                    <p>Ante la solicitud de la baja federativa, el jugador deberá abonar las cuotas pendientes del coste total de la escuela. De lo contrario el club no está obligado a facilitar dicha baja.</p>
+                </div>
+
+                <div className="form-section">
                     <div className="form-row single-column">
                         <div className="form-group checkbox-group">
                             <label className="checkbox-label">

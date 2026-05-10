@@ -49,10 +49,6 @@ export const calculatePagosTotales = (categoria, loteria, hermanosEnClub) => {
             pago = 0;
              break;
     }
-    // Si el jugador no participa en la lotería, se le añade el coste de la lotería
-    if (!loteria) {
-        pago += 50;
-    }
 
     if (hermanosEnClub) {
         pago -= 50;

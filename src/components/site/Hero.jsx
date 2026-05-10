@@ -5,11 +5,11 @@ const Hero = () => {
     <section id="hero" className="hero">
       <div className="hero-content">
         <div className="hero-text">
-          <h1>Meliana CF</h1>
+          <h1>Más que un club, una familia</h1>
           <p>
-            Descubre tu potencial en el fútbol con nuestra academia de élite. 
-            Entrenamiento profesional, instalaciones de primera clase y un ambiente 
-            donde los sueños se hacen realidad.
+            Formación ,competición y pasión por el fútbol. Un lugar donde crecer y
+            desarrollarte junto a compañeros/as y entrenadores, en un espacio adaptado para 
+            disfrutar y vivir el deporte.
           </p>
           <div className="hero-buttons">
             <a href="#inscripcion" className="btn btn-primary btn-lg">

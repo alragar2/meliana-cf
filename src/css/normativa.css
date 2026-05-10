@@ -1,0 +1,58 @@
+/* Normativa Section Styles */
+.normativa {
+  padding: var(--spacing-3xl) 0;
+  background-color: var(--gray-50);
+}
+
+.normativa-content {
+  max-width: 900px;
+  margin: 0 auto;
+  background: var(--white);
+  padding: var(--spacing-2xl);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
+  line-height: 1.6;
+}
+
+.normativa-content h2 {
+  color: var(--primary-color);
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+.normativa-section {
+  margin-bottom: var(--spacing-xl);
+  padding-bottom: var(--spacing-lg);
+}
+
+.normativa-section:not(:last-child) {
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.normativa-section h3 {
+  color: var(--primary-color);
+  margin-bottom: var(--spacing-md);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.normativa-section p {
+  color: var(--text-color);
+  margin-bottom: var(--spacing-md);
+  text-align: justify;
+}
+
+.normativa-section ul {
+  margin: var(--spacing-md) 0 var(--spacing-2xl) 0;
+  padding-left: calc(var(--spacing-xl) + 0.5rem);
+  list-style-position: inside;
+}
+
+.normativa-section li {
+  margin-bottom: var(--spacing-md);
+  color: var(--text-color);
+  line-height: 1.75;
+}
+

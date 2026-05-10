@@ -21,6 +21,8 @@
 @import url('./css/faq.css');
 @import url('./css/privacy.css');
 @import url('./css/footer.css');
+@import url('./css/admin-login.css');
+@import url('./css/normativa.css');
 
 /* Elementos compartidos */
 @import url('./css/buttons.css');

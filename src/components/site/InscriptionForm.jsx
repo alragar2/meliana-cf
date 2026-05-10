@@ -244,8 +244,7 @@ const InscriptionForm = ({ isVisible, onClose, onSuccess }) => {
                             </label>
                         </div>
                     </div>
-                    <p>Si activa la casilla, acepta participar en la lotería de Navidad y se le entregarán 50 papeletas. Si no participa, se añadirán 50€ al total de la inscripción en concepto de no participación.</p>
-                </div>
+                    <p>Si activa la casilla, acepta participar en la lotería de Navidad y se le entregarán 50 papeletas. La no participación en la lotería implica el pago de los beneficios al club (50€)</p></div>
 
                 <div className="form-section">
                     <h4>Datos de los Padres/Tutores</h4>
@@ -332,7 +331,7 @@ const InscriptionForm = ({ isVisible, onClose, onSuccess }) => {
                 </div>
 
                 <div className="form-section">
-                    <h4>Datos Bancarios y Lotería</h4>
+                    <h4>Datos Bancarios</h4>
                     <div className="form-row">
                         <FormField
                             label="Nombre de la entidad *"
