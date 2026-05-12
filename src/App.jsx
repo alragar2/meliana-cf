@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './styles-modular.css';
+import './css/jornadas-abiertas.css';
 
 // Importar componentes
 import Header from './components/site/Header';
@@ -18,12 +19,14 @@ import Privacy from './components/site/Privacy';
 import Footer from './components/site/Footer';
 import AdminPage from './components/admin/AdminPage';
 import Normativa from './components/site/Normativa';
+import JornadasAbiertas from './components/site/JornadasAbiertas';
 
 // Componente de la página principal
 const HomePage = () => (
   <>
     <Header />
     <Hero />
+    <JornadasAbiertas />
     <Inscription />
     <Gallery />
     <About />
