@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { calculatePagosTotales } from '../utils/payments';
+import { calculatePagosTotales, calculatePaymentBreakdown } from '../utils/payments';
 import { calcularCategoria } from '../utils/categories';
 
 const defaultInitialForm = {
@@ -34,6 +34,7 @@ export default function useInscriptionForm(initialValues = {}) {
     const [touchedFields, setTouchedFields] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [totalAPagar, setTotalAPagar] = useState(0);
+    const [paymentBreakdown, setPaymentBreakdown] = useState(null);
 
     useEffect(() => {
         const { fechaNacimiento, sexo, loteria, hermanosEnClub } = formData;
@@ -42,12 +43,16 @@ export default function useInscriptionForm(initialValues = {}) {
             try {
                 const categoria = calcularCategoria(fechaNacimiento, sexo);
                 const total = calculatePagosTotales(categoria, loteria, hermanosEnClub);
+                const breakdown = calculatePaymentBreakdown(categoria, hermanosEnClub);
                 setTotalAPagar(total);
+                setPaymentBreakdown(breakdown);
             } catch (e) {
                 setTotalAPagar(0);
+                setPaymentBreakdown(null);
             }
         } else {
             setTotalAPagar(0);
+            setPaymentBreakdown(null);
         }
     }, [formData.fechaNacimiento, formData.sexo, formData.loteria, formData.hermanosEnClub]);
 
@@ -110,6 +115,7 @@ export default function useInscriptionForm(initialValues = {}) {
         handleBlur,
         handleFocus,
         resetForm,
-        totalAPagar
+        totalAPagar,
+        paymentBreakdown
     };
 }

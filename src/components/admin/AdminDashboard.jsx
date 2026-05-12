@@ -46,7 +46,8 @@ const AdminDashboard = ({ user, onLogout }) => {
             padreApellidos.toLowerCase().includes(searchTerm.toLowerCase());
 
         // Filtro por categoría
-        const matchesCategoria = !filters.categoria || calcularCategoria(inscription.fechaNacimiento) === filters.categoria;
+        const inscriptionCategoria = inscription.categoria || calcularCategoria(inscription.fechaNacimiento, inscription.sexo);
+        const matchesCategoria = !filters.categoria || inscriptionCategoria === filters.categoria;
 
         // Filtro por estado
         const matchesEstado = !filters.estado || inscription.estado === filters.estado;

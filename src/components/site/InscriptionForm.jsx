@@ -18,7 +18,8 @@ const InscriptionForm = ({ isVisible, onClose, onSuccess }) => {
         handleBlur,
         handleFocus,
         resetForm,
-        totalAPagar
+        totalAPagar,
+        paymentBreakdown
     } = useInscriptionForm();
 
     const handleSubmit = async (e) => {
@@ -367,11 +368,41 @@ const InscriptionForm = ({ isVisible, onClose, onSuccess }) => {
                     
                 </div>
 
-                {totalAPagar > 0 && (
+                {totalAPagar > 0 && paymentBreakdown && (
                     <div className="form-section total-preview" style={{ textAlign: 'center', backgroundColor: '#f8f9fa', padding: '1.5rem', borderRadius: '8px' }}>
                         <h4>Total a pagar</h4>
-                        <p className="total-amount" style={{ fontSize: '2.2rem', fontWeight: 'bold', color: '#1a73e8', margin: '0.5rem 0' }}>{totalAPagar}€</p>
-                        <small>Este importe es una estimación. El total final se confirmará al procesar la inscripción.</small>
+                        
+                        {/* Desglose de inscripción y cuotas */}
+                        <div style={{ textAlign: 'left', marginBottom: '1.5rem' }}>
+                            {paymentBreakdown.inscripcion > 0 && (
+                                <div style={{ marginBottom: '1rem', paddingBottom: '1rem', borderBottom: '1px solid #ddd' }}>
+                                    <p style={{ margin: '0.25rem 0' }}>
+                                        <strong>Inscripción:</strong> {paymentBreakdown.inscripcion}€
+                                    </p>
+                                </div>
+                            )}
+                            
+                            <div style={{ marginBottom: '1rem' }}>
+                                <p style={{ margin: '0.5rem 0', fontWeight: 'bold', color: '#1a73e8' }}>
+                                    Cuotas mensuales ({paymentBreakdown.cuotas.length} cuotas de {paymentBreakdown.cuotas[0]?.cantidad}€):
+                                </p>
+                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '0.5rem', marginTop: '0.5rem' }}>
+                                    {paymentBreakdown.cuotas.map((cuota, index) => (
+                                        <p key={index} style={{ margin: '0.25rem 0', fontSize: '0.9rem', padding: '0.5rem', backgroundColor: '#fff', borderLeft: '3px solid #1a73e8' }}>
+                                            {cuota.mes}: {cuota.cantidad}€
+                                        </p>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Total final */}
+                        <div style={{ paddingTop: '1rem', borderTop: '2px solid #1a73e8' }}>
+                            <p className="total-amount" style={{ fontSize: '2.2rem', fontWeight: 'bold', color: '#1a73e8', margin: '1rem 0' }}>
+                                Total: {totalAPagar}€
+                            </p>
+                            <small style={{ color: '#666' }}>Este importe es una estimación. El total final se confirmará al procesar la inscripción.</small>
+                        </div>
                     </div>
                 )}
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import { calcularCategoria } from '../../utils/categories';
 
 const FiltersPanel = ({ 
     showFilters, 
@@ -8,27 +9,16 @@ const FiltersPanel = ({
     onClearFilters, 
     onToggleFilters 
 }) => {
-    // Obtener categorías únicas basadas en fecha de nacimiento
+    // Obtener categorías únicas basadas en la categoría guardada o en el cálculo por fecha y sexo
     const getUniqueCategories = () => {
         const categories = [];
         inscriptions.forEach(inscription => {
-            if (inscription.fechaNacimiento) {
-                const year = parseInt(inscription.fechaNacimiento.substring(0, 4));
-                if (!isNaN(year)) {
-                    let category = '';
-                    if (year === 2020 || year === 2021) category = 'QUERUBÍN';
-                    else if (year === 2018 || year === 2019) category = 'PREBE';
-                    else if (year === 2016 || year === 2017) category = 'BENJAMÍN 1 AÑO';
-                    else if (year === 2014 || year === 2015) category = 'ALEVÍN 1 AÑO';
-                    else if (year === 2012 || year === 2013) category = 'INFANTIL';
-                    else if (year === 2010 || year === 2011) category = 'CADETE';
-                    else if (year >= 2007 && year <= 2009) category = 'JUVENIL';
-                    else category = 'AMATEUR';
-                    
-                    if (!categories.includes(category)) {
-                        categories.push(category);
-                    }
-                }
+            let category = inscription.categoria;
+            if (!category && inscription.fechaNacimiento) {
+                category = calcularCategoria(inscription.fechaNacimiento, inscription.sexo);
+            }
+            if (category && !categories.includes(category)) {
+                categories.push(category);
             }
         });
         return categories.sort();

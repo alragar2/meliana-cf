@@ -42,7 +42,8 @@ export const calculatePagosTotales = (categoria, loteria, hermanosEnClub) => {
         case 'JUVENIL':
             pago = 470;
             break;
-        case 'FEMENINO':
+        case 'FEMENINO CADETE':
+        case 'FEMENINO INFANTIL':
             pago = 435;
             break;
         default:
@@ -50,9 +51,107 @@ export const calculatePagosTotales = (categoria, loteria, hermanosEnClub) => {
              break;
     }
 
-    if (hermanosEnClub) {
+    if (hermanosEnClub && categoria !== 'QUERUBÍN') {
         pago -= 50;
     }
 
     return pago;
+}
+
+/**
+ * Calcula el desglose de pagos por mes según la categoría
+ * @param {string} categoria - La categoría del jugador
+ * @param {boolean} hermanosEnClub - Si tiene hermanos en el club
+ * @returns {Object} - Objeto con inscripción, cuotas y total
+ */
+export const calculatePaymentBreakdown = (categoria, hermanosEnClub = false) => {
+    const meses = [
+        'septiembre',
+        'octubre',
+        'noviembre',
+        'diciembre',
+        'febrero',
+        'marzo',
+        'abril',
+        'mayo'
+    ];
+
+    const mesesFemeninoPlusQuerubin = [
+        'septiembre',
+        'octubre',
+        'noviembre',
+        'diciembre',
+        'febrero',
+        'marzo',
+        'abril',
+        'mayo',
+        'junio'
+    ];
+
+    let inscripcion = 0;
+    let cuotaMensual = 0;
+    let numCuotas = 0;
+    let mesesAPagar = [];
+
+    switch (categoria) {
+        case 'QUERUBÍN':
+            inscripcion = 0;
+            cuotaMensual = 25;
+            numCuotas = 9;
+            mesesAPagar = mesesFemeninoPlusQuerubin;
+            break;
+        case 'FEMENINO CADETE':
+        case 'FEMENINO INFANTIL':
+            inscripcion = 120;
+            cuotaMensual = 35;
+            numCuotas = 9;
+            mesesAPagar = mesesFemeninoPlusQuerubin;
+            break;
+        case 'JUVENIL':
+            inscripcion = 120;
+            cuotaMensual = 50;
+            numCuotas = 7;
+            mesesAPagar = meses.slice(0, 7);
+            break;
+        case 'PREBE':
+        case 'BENJAMÍN 1 AÑO':
+        case 'BENJAMÍN 2 AÑO':
+        case 'ALEVÍN 1 AÑO':
+        case 'ALEVÍN 2 AÑO':
+        case 'INFANTIL':
+        case 'CADETE':
+            inscripcion = 120;
+            cuotaMensual = 50;
+            numCuotas = 8;
+            mesesAPagar = meses;
+            break;
+        default:
+            inscripcion = 0;
+            cuotaMensual = 0;
+            numCuotas = 0;
+            mesesAPagar = [];
+    }
+
+    // Aplicar descuento si tiene hermanos en el club (no aplica a QUERUBÍN)
+    let inscripcionFinal = inscripcion;
+    if (hermanosEnClub && inscripcion > 0 && categoria !== 'QUERUBÍN') {
+        inscripcionFinal = inscripcion - 50;
+    }
+
+    // Construir desglose de cuotas
+    const cuotas = mesesAPagar.map((mes, index) => ({
+        mes: mes.charAt(0).toUpperCase() + mes.slice(1),
+        cantidad: cuotaMensual,
+        indice: index + 1
+    }));
+
+    const totalCuotas = cuotaMensual * numCuotas;
+    const total = inscripcionFinal + totalCuotas;
+
+    return {
+        inscripcion: inscripcionFinal,
+        cuotas,
+        totalCuotas,
+        total
+    };
 }
