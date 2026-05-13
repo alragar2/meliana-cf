@@ -14,7 +14,7 @@ const ConfirmationPage = ({ onConfirm, inscriptionData }) => {
 
             // Determinar el nombre base del PDF
             let pdfBase = 'INSCRIPCIÓN';
-            if (categoria === 'FEMENINO INFANTIL' || categoria === 'FEMENINO CADETE') pdfBase = 'INSCRIPCIÓN_FEMENINO';
+            if (categoria === 'FEMENINO INFANTIL' || categoria === 'FEMENINO ALEVÍN') pdfBase = 'INSCRIPCIÓN_FEMENINO';
             else if (categoria === 'QUERUBÍN') pdfBase = 'INSCRIPCIÓN_QUERUBINES';
             else if (categoria === 'JUVENIL' && inscriptionData.sexo === 'masculino') pdfBase = 'INSCRIPCIÓN_JUVENILES';
 
