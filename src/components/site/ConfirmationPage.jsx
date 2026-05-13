@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { calcularCategoria } from '../../utils/categories';
 
 const ConfirmationPage = ({ onConfirm, inscriptionData }) => {
     const [acceptTerms, setAcceptTerms] = useState(false);
@@ -8,6 +9,29 @@ const ConfirmationPage = ({ onConfirm, inscriptionData }) => {
 
     const handleConfirm = () => {
         if (canConfirm) {
+            // Calcular la categoría
+            const categoria = calcularCategoria(inscriptionData.fechaNacimiento, inscriptionData.sexo);
+
+            // Determinar el nombre base del PDF
+            let pdfBase = 'INSCRIPCIÓN';
+            if (categoria === 'FEMENINO INFANTIL' || categoria === 'FEMENINO CADETE') pdfBase = 'INSCRIPCIÓN_FEMENINO';
+            else if (categoria === 'QUERUBÍN') pdfBase = 'INSCRIPCIÓN_QUERUBINES';
+            else if (categoria === 'JUVENIL' && inscriptionData.sexo === 'masculino') pdfBase = 'INSCRIPCIÓN_JUVENILES';
+
+            // Determinar sufijos para hermanos y lotería
+            const h = inscriptionData.hermanosEnClub ? 'CON' : 'SIN';
+            const l = inscriptionData.loteria ? 'CON' : 'SIN';
+            const pdfName = `${pdfBase}_${h}_H_${l}_L`;
+
+            // Descargar el PDF
+            const pdfUrl = `/PDFs/${pdfName}.pdf`;
+            const link = document.createElement('a');
+            link.href = pdfUrl;
+            link.download = `${pdfName}.pdf`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
             // Aquí podrías hacer una llamada final para guardar estas aceptaciones si fuera necesario
             // Por ejemplo: inscriptionService.updateAuthorizations(inscriptionData.id, { acceptTerms, acceptPhotos });
             onConfirm();
