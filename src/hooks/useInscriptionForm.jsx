@@ -42,7 +42,7 @@ export default function useInscriptionForm(initialValues = {}) {
         if (fechaNacimiento && sexo) {
             try {
                 const categoria = calcularCategoria(fechaNacimiento, sexo);
-                const total = calculatePagosTotales(categoria, loteria, hermanosEnClub);
+                const total = calculatePagosTotales(categoria, loteria, hermanosEnClub, sexo);
                 const breakdown = calculatePaymentBreakdown(categoria, hermanosEnClub, sexo);
                 setTotalAPagar(total);
                 setPaymentBreakdown(breakdown);

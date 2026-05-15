@@ -23,7 +23,7 @@ export const calculateTotalPagado = (pagos) => {
  * @param {boolean} hermanosEnClub - Si tiene hermanos en el club
  * @returns {number} - El total a pagar
  */
-export const calculatePagosTotales = (categoria, loteria, hermanosEnClub) => {
+export const calculatePagosTotales = (categoria, loteria, hermanosEnClub, sexo) => {
 
     let pago = 0;
     switch (categoria) {
@@ -48,6 +48,10 @@ export const calculatePagosTotales = (categoria, loteria, hermanosEnClub) => {
         default:
             pago = 0;
              break;
+    }
+
+    if (sexo === 'femenino' && categoria !== 'QUERUBÍN') {
+        pago = 435;
     }
 
     if (hermanosEnClub && categoria !== 'QUERUBÍN' && categoria !== 'AMATEUR') {

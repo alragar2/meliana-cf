@@ -65,7 +65,7 @@ export const inscriptionService = {
       // Calcular categoría y pagos totales
       const categoria = calcularCategoria(inscriptionData.fechaNacimiento, inscriptionData.sexo);
       dataToSave.categoria = categoria;
-      dataToSave.totalAPagar = calculatePagosTotales(categoria, dataToSave.loteria, dataToSave.hermanosEnClub);
+      dataToSave.totalAPagar = calculatePagosTotales(categoria, dataToSave.loteria, dataToSave.hermanosEnClub, dataToSave.sexo);
 
       console.log('📝 [Firebase Service] Datos finales a guardar:', dataToSave);
       console.log('✍️ [Firebase Service] Enviando a Firestore...');
@@ -167,7 +167,7 @@ export const inscriptionService = {
 
       // Re-calcular categoría y total a pagar por si cambiaron datos clave
       const categoria = calcularCategoria(formData.fechaNacimiento, formData.sexo);
-      const totalAPagar = calculatePagosTotales(categoria, formData.loteria, formData.hermanosEnClub);
+      const totalAPagar = calculatePagosTotales(categoria, formData.loteria, formData.hermanosEnClub, formData.sexo);
 
       // Estructurar los datos como en el modelo de la base de datos
       const dataToUpdate = {
@@ -366,6 +366,15 @@ export const inscriptionService = {
 
   // Validar datos de inscripción antes de enviar
   validateInscriptionData(data) {
+    // Validar que no sea chica amateur
+    const categoria = calcularCategoria(data.fechaNacimiento, data.sexo);
+    if (categoria === 'AMATEUR' && data.sexo === 'femenino') {
+      return {
+        isValid: false,
+        message: 'Lo sentimos, actualmente no disponemos de equipo femenino en la categoría AMATEUR. Por favor contacta con el club para más información.'
+      };
+    }
+
     const adult = isAdult(data.fechaNacimiento);
     const requiredFields = adult
       ? REQUIRED_INSCRIPTION_FIELDS.filter(field => !ADULT_PARENT_FIELDS.includes(field))
