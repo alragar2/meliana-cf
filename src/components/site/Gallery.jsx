@@ -68,7 +68,7 @@ const Gallery = () => {
         >
           {slides.map((slide, index) => (
             <div key={index} className="carousel-slide">
-              <img src={slide.image} alt={slide.alt} />
+              <img src={slide.image} alt={slide.alt} loading="lazy" />
               <div className="carousel-overlay">
                 <h3>{slide.title}</h3>
               </div>

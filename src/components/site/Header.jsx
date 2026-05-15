@@ -7,7 +7,8 @@ const Header = () => {
         <div className="nav-container">
           <div className="nav-logo">
             <a href="#hero" className="logo-link">
-              <img src="/images/melianacf-logo.png" alt="Meliana CF" className="logo" />
+              <img src="/images/melianacf-logo.png" alt="Meliana CF" className="logo" loading="lazy" />
+              <h1 className="sr-only">Meliana CF - Escuela de Fútbol</h1>
               <span className="logo-text">Meliana CF</span>
             </a>
           </div>
