@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { inscriptionService } from '../../firebase/inscriptionService';
 import { horariosDisponibles } from '../../utils/horariosConfig';
 import FormField from './FormField';
@@ -21,6 +21,33 @@ const InscriptionForm = ({ isVisible, onClose, onSuccess }) => {
         totalAPagar,
         paymentBreakdown
     } = useInscriptionForm();
+
+    const isAdult = (() => {
+        if (!formData.fechaNacimiento) return false;
+        const today = new Date();
+        const birthDate = new Date(formData.fechaNacimiento);
+        if (Number.isNaN(birthDate.getTime())) return false;
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            age -= 1;
+        }
+        return age >= 18;
+    })();
+
+    useEffect(() => {
+        if (isAdult) {
+            setFormData(prev => ({
+                ...prev,
+                nombrePadre: '',
+                apellidosPadre: '',
+                telefonoPadre: '',
+                correoPadre: '',
+                dniPadre: '',
+                parentesco: ''
+            }));
+        }
+    }, [isAdult, setFormData]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -247,89 +274,96 @@ const InscriptionForm = ({ isVisible, onClose, onSuccess }) => {
                     </div>
                     <p>Si activa la casilla, acepta participar en la lotería de Navidad y se le entregarán 50 papeletas. La no participación en la lotería implica el pago de los beneficios al club (50€)</p></div>
 
-                <div className="form-section">
-                    <h4>Datos de los Padres/Tutores</h4>
-                    <div className="form-row">
-                        <FormField
-                            label="Nombre *"
-                            name="nombrePadre"
-                            type="text"
-                            formData={formData}
-                            touchedFields={touchedFields}
-                            isFieldInvalid={isFieldInvalid}
-                            onChange={handleInputChange}
-                            onBlur={handleBlur}
-                            onFocus={handleFocus}
-                        />
-                        <FormField
-                            label="Apellidos *"
-                            name="apellidosPadre"
-                            type="text"
-                            formData={formData}
-                            touchedFields={touchedFields}
-                            isFieldInvalid={isFieldInvalid}
-                            onChange={handleInputChange}
-                            onBlur={handleBlur}
-                            onFocus={handleFocus}
-                        />
-                    </div>
+                {!isAdult ? (
+                    <div className="form-section">
+                        <h4>Datos de los Padres/Tutores</h4>
+                        <div className="form-row">
+                            <FormField
+                                label="Nombre *"
+                                name="nombrePadre"
+                                type="text"
+                                formData={formData}
+                                touchedFields={touchedFields}
+                                isFieldInvalid={isFieldInvalid}
+                                onChange={handleInputChange}
+                                onBlur={handleBlur}
+                                onFocus={handleFocus}
+                            />
+                            <FormField
+                                label="Apellidos *"
+                                name="apellidosPadre"
+                                type="text"
+                                formData={formData}
+                                touchedFields={touchedFields}
+                                isFieldInvalid={isFieldInvalid}
+                                onChange={handleInputChange}
+                                onBlur={handleBlur}
+                                onFocus={handleFocus}
+                            />
+                        </div>
 
-                    <div className="form-row">
-                        <FormField
-                            label="Teléfono *"
-                            name="telefonoPadre"
-                            type="text"
-                            formData={formData}
-                            touchedFields={touchedFields}
-                            isFieldInvalid={isFieldInvalid}
-                            onChange={handleInputChange}
-                            onBlur={handleBlur}
-                            onFocus={handleFocus}
-                        />
-                        <FormField
-                            label="Correo electrónico *"
-                            name="correoPadre"
-                            type="email"
-                            formData={formData}
-                            touchedFields={touchedFields}
-                            isFieldInvalid={isFieldInvalid}
-                            onChange={handleInputChange}
-                            onBlur={handleBlur}
-                            onFocus={handleFocus}
-                        />
-                    </div>
+                        <div className="form-row">
+                            <FormField
+                                label="Teléfono *"
+                                name="telefonoPadre"
+                                type="text"
+                                formData={formData}
+                                touchedFields={touchedFields}
+                                isFieldInvalid={isFieldInvalid}
+                                onChange={handleInputChange}
+                                onBlur={handleBlur}
+                                onFocus={handleFocus}
+                            />
+                            <FormField
+                                label="Correo electrónico *"
+                                name="correoPadre"
+                                type="email"
+                                formData={formData}
+                                touchedFields={touchedFields}
+                                isFieldInvalid={isFieldInvalid}
+                                onChange={handleInputChange}
+                                onBlur={handleBlur}
+                                onFocus={handleFocus}
+                            />
+                        </div>
 
-                    <div className="form-row">
-                        <FormField
-                            label="DNI/NIE *"
-                            name="dniPadre"
-                            type="text"
-                            formData={formData}
-                            touchedFields={touchedFields}
-                            isFieldInvalid={isFieldInvalid}
-                            onChange={handleInputChange}
-                            onBlur={handleBlur}
-                            onFocus={handleFocus}
-                        />
-                        <FormField
-                            label="Parentesco *"
-                            name="parentesco"
-                            as="select"
-                            formData={formData}
-                            touchedFields={touchedFields}
-                            isFieldInvalid={isFieldInvalid}
-                            isFieldValid={isFieldValid}
-                            onChange={handleInputChange}
-                            onBlur={handleBlur}
-                            onFocus={handleFocus}
-                        >
-                            <option value="">Seleccionar</option>
-                            <option value="Padre">Padre</option>
-                            <option value="Madre">Madre</option>
-                            <option value="Tutor">Tutor</option>
-                        </FormField>
+                        <div className="form-row">
+                            <FormField
+                                label="DNI/NIE *"
+                                name="dniPadre"
+                                type="text"
+                                formData={formData}
+                                touchedFields={touchedFields}
+                                isFieldInvalid={isFieldInvalid}
+                                onChange={handleInputChange}
+                                onBlur={handleBlur}
+                                onFocus={handleFocus}
+                            />
+                            <FormField
+                                label="Parentesco *"
+                                name="parentesco"
+                                as="select"
+                                formData={formData}
+                                touchedFields={touchedFields}
+                                isFieldInvalid={isFieldInvalid}
+                                isFieldValid={isFieldValid}
+                                onChange={handleInputChange}
+                                onBlur={handleBlur}
+                                onFocus={handleFocus}
+                            >
+                                <option value="">Seleccionar</option>
+                                <option value="Padre">Padre</option>
+                                <option value="Madre">Madre</option>
+                                <option value="Tutor">Tutor</option>
+                            </FormField>
+                        </div>
                     </div>
-                </div>
+                ) : (
+                    <div className="form-section">
+                        <h4>Datos de los Padres/Tutores</h4>
+                        <p>El jugador tiene 18 años o más, por lo que no es necesario rellenar los datos de los padres o tutores.</p>
+                    </div>
+                )}
 
                 <div className="form-section">
                     <h4>Datos Bancarios</h4>

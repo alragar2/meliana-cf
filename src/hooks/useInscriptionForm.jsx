@@ -43,7 +43,7 @@ export default function useInscriptionForm(initialValues = {}) {
             try {
                 const categoria = calcularCategoria(fechaNacimiento, sexo);
                 const total = calculatePagosTotales(categoria, loteria, hermanosEnClub);
-                const breakdown = calculatePaymentBreakdown(categoria, hermanosEnClub);
+                const breakdown = calculatePaymentBreakdown(categoria, hermanosEnClub, sexo);
                 setTotalAPagar(total);
                 setPaymentBreakdown(breakdown);
             } catch (e) {

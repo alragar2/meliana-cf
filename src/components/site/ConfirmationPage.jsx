@@ -1,9 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { calcularCategoria } from '../../utils/categories';
 
 const ConfirmationPage = ({ onConfirm, inscriptionData }) => {
     const [acceptTerms, setAcceptTerms] = useState(false);
     const [acceptPhotos, setAcceptPhotos] = useState(false);
+    const confirmationRef = useRef(null);
+
+    useEffect(() => {
+        confirmationRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setTimeout(() => window.scrollBy(0, -100), 300);
+    }, []);
 
     const canConfirm = acceptTerms && acceptPhotos;
 
@@ -12,25 +18,28 @@ const ConfirmationPage = ({ onConfirm, inscriptionData }) => {
             // Calcular la categoría
             const categoria = calcularCategoria(inscriptionData.fechaNacimiento, inscriptionData.sexo);
 
-            // Determinar el nombre base del PDF
-            let pdfBase = 'INSCRIPCIÓN';
-            if (categoria === 'FEMENINO INFANTIL' || categoria === 'FEMENINO ALEVÍN') pdfBase = 'INSCRIPCIÓN_FEMENINO';
-            else if (categoria === 'QUERUBÍN') pdfBase = 'INSCRIPCIÓN_QUERUBINES';
-            else if (categoria === 'JUVENIL' && inscriptionData.sexo === 'masculino') pdfBase = 'INSCRIPCIÓN_JUVENILES';
+            // Solo descargar PDF si no es AMATEUR
+            if (categoria !== 'AMATEUR') {
+                // Determinar el nombre base del PDF
+                let pdfBase = 'INSCRIPCIÓN';
+                if (categoria === 'FEMENINO INFANTIL' || categoria === 'FEMENINO ALEVÍN') pdfBase = 'INSCRIPCIÓN_FEMENINO';
+                else if (categoria === 'QUERUBÍN') pdfBase = 'INSCRIPCIÓN_QUERUBINES';
+                else if (categoria === 'JUVENIL' && inscriptionData.sexo === 'masculino') pdfBase = 'INSCRIPCIÓN_JUVENILES';
 
-            // Determinar sufijos para hermanos y lotería
-            const h = inscriptionData.hermanosEnClub ? 'CON' : 'SIN';
-            const l = inscriptionData.loteria ? 'CON' : 'SIN';
-            const pdfName = `${pdfBase}_${h}_H_${l}_L`;
+                // Determinar sufijos para hermanos y lotería
+                const h = inscriptionData.hermanosEnClub ? 'CON' : 'SIN';
+                const l = inscriptionData.loteria ? 'CON' : 'SIN';
+                const pdfName = `${pdfBase}_${h}_H_${l}_L`;
 
-            // Descargar el PDF
-            const pdfUrl = `/PDFs/${pdfName}.pdf`;
-            const link = document.createElement('a');
-            link.href = pdfUrl;
-            link.download = `${pdfName}.pdf`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+                // Descargar el PDF
+                const pdfUrl = `/PDFs/${pdfName}.pdf`;
+                const link = document.createElement('a');
+                link.href = pdfUrl;
+                link.download = `${pdfName}.pdf`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
 
             // Aquí podrías hacer una llamada final para guardar estas aceptaciones si fuera necesario
             // Por ejemplo: inscriptionService.updateAuthorizations(inscriptionData.id, { acceptTerms, acceptPhotos });
@@ -39,7 +48,7 @@ const ConfirmationPage = ({ onConfirm, inscriptionData }) => {
     };
 
     return (
-        <div className="registration-form-container confirmation-page">
+        <div ref={confirmationRef} className="registration-form-container confirmation-page">
             <div className="registration-form">
                 <h3>¡Un último paso, {inscriptionData?.nombreNino}!</h3>
                 <p>Por favor, lee y acepta las siguientes condiciones para finalizar tu pre-inscripción.</p>

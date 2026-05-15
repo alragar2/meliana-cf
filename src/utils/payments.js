@@ -50,7 +50,7 @@ export const calculatePagosTotales = (categoria, loteria, hermanosEnClub) => {
              break;
     }
 
-    if (hermanosEnClub && categoria !== 'QUERUBÍN') {
+    if (hermanosEnClub && categoria !== 'QUERUBÍN' && categoria !== 'AMATEUR') {
         pago -= 50;
     }
 
@@ -63,7 +63,7 @@ export const calculatePagosTotales = (categoria, loteria, hermanosEnClub) => {
  * @param {boolean} hermanosEnClub - Si tiene hermanos en el club
  * @returns {Object} - Objeto con inscripción, cuotas y total
  */
-export const calculatePaymentBreakdown = (categoria, hermanosEnClub = false) => {
+export const calculatePaymentBreakdown = (categoria, hermanosEnClub = false, sexo) => {
     const meses = [
         'septiembre',
         'octubre',
@@ -131,9 +131,17 @@ export const calculatePaymentBreakdown = (categoria, hermanosEnClub = false) => 
             mesesAPagar = [];
     }
 
-    // Aplicar descuento si tiene hermanos en el club (no aplica a QUERUBÍN)
+    if (sexo === 'femenino') {
+        inscripcion = 120;
+            cuotaMensual = 35;
+            numCuotas = 9;
+            mesesAPagar = mesesFemeninoPlusQuerubin;
+    }
+
+
+    // Aplicar descuento si tiene hermanos en el club (no aplica a QUERUBÍN o AMATEUR)
     let inscripcionFinal = inscripcion;
-    if (hermanosEnClub && inscripcion > 0 && categoria !== 'QUERUBÍN') {
+    if (hermanosEnClub && inscripcion > 0 && categoria !== 'QUERUBÍN' && categoria !== 'AMATEUR') {
         inscripcionFinal = inscripcion - 50;
     }
 

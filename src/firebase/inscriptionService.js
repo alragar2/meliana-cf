@@ -9,6 +9,33 @@ import {
 import { calcularCategoria } from '../utils/categories';
 import { calculatePagosTotales } from '../utils/payments';
 
+const ADULT_PARENT_FIELDS = [
+  'nombrePadre',
+  'apellidosPadre',
+  'telefonoPadre',
+  'correoPadre',
+  'dniPadre',
+  'parentesco'
+];
+
+const calculateAge = (fechaNacimiento) => {
+  if (!fechaNacimiento) return null;
+  const birthDate = new Date(fechaNacimiento);
+  if (Number.isNaN(birthDate.getTime())) return null;
+  const today = new Date();
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const monthDiff = today.getMonth() - birthDate.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+    age -= 1;
+  }
+  return age;
+};
+
+const isAdult = (fechaNacimiento) => {
+  const age = calculateAge(fechaNacimiento);
+  return age !== null && age >= 18;
+};
+
 // Servicio para manejar las inscripciones en Firebase
 export const inscriptionService = {
   
@@ -339,7 +366,12 @@ export const inscriptionService = {
 
   // Validar datos de inscripción antes de enviar
   validateInscriptionData(data) {
-    const missingFields = REQUIRED_INSCRIPTION_FIELDS.filter(field => !data[field] || (typeof data[field] === 'string' && data[field].trim() === ''));
+    const adult = isAdult(data.fechaNacimiento);
+    const requiredFields = adult
+      ? REQUIRED_INSCRIPTION_FIELDS.filter(field => !ADULT_PARENT_FIELDS.includes(field))
+      : REQUIRED_INSCRIPTION_FIELDS;
+
+    const missingFields = requiredFields.filter(field => !data[field] || (typeof data[field] === 'string' && data[field].trim() === ''));
     
     if (missingFields.length > 0) {
       return {
@@ -356,20 +388,22 @@ export const inscriptionService = {
       };
     }
 
-    // Validar teléfono del padre
-    if (!VALIDATION_PATTERNS.phone.test(data.telefonoPadre)) {
-      return {
-        isValid: false,
-        message: 'El formato del teléfono del padre no es válido'
-      };
-    }
+    if (!adult) {
+      // Validar teléfono del padre
+      if (!VALIDATION_PATTERNS.phone.test(data.telefonoPadre)) {
+        return {
+          isValid: false,
+          message: 'El formato del teléfono del padre no es válido'
+        };
+      }
 
-    // Validar email del padre
-    if (!VALIDATION_PATTERNS.email.test(data.correoPadre)) {
-      return {
-        isValid: false,
-        message: 'El formato del correo electrónico no es válido'
-      };
+      // Validar email del padre
+      if (!VALIDATION_PATTERNS.email.test(data.correoPadre)) {
+        return {
+          isValid: false,
+          message: 'El formato del correo electrónico no es válido'
+        };
+      }
     }
 
     // Validar DNI/NIE del niño
@@ -380,12 +414,14 @@ export const inscriptionService = {
       };
     }
 
-    // Validar DNI/NIE del padre
-    if (!VALIDATION_PATTERNS.dni.test(data.dniPadre.replace(/[-\s]/g, ''))) {
-      return {
-        isValid: false,
-        message: 'El formato del DNI/NIE del padre no es válido'
-      };
+    if (!adult) {
+      const parentDni = data.dniPadre ? data.dniPadre.replace(/[-\s]/g, '') : '';
+      if (!VALIDATION_PATTERNS.dni.test(parentDni)) {
+        return {
+          isValid: false,
+          message: 'El formato del DNI/NIE del padre no es válido'
+        };
+      }
     }
 
     // Validar IBAN
