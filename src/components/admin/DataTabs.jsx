@@ -14,7 +14,7 @@ export const handleExportExcel = (filteredInscriptions, activeTab, calcularCateg
     const dataAgrupada = {};
 
     filteredInscriptions.forEach(inscription => {
-        const cat = calcularCategoria(inscription.fechaNacimiento) || 'Sin Categoría';
+        const cat = calcularCategoria(inscription.fechaNacimiento, inscription.sexo) || 'Sin Categoría';
         if (!dataAgrupada[cat]) dataAgrupada[cat] = [];
 
         dataAgrupada[cat].push({
@@ -36,7 +36,7 @@ export const handleExportDB = (inscriptions) => {
     exportDatabaseToExcel(inscriptions, `base_de_datos_meliana_cf_2026_2027`);
 };
 
-const DataTabs = ({ activeTab, onTabChange, filteredInscriptions, formatTimestamp, calcularCategoria }) => {
+const DataTabs = ({ activeTab, onTabChange, filteredInscriptions, formatTimestamp, calcularCategoria, onDelete }) => {
 
     const [localInscriptions, setLocalInscriptions] = useState(filteredInscriptions);
     const [editModalOpen, setEditModalOpen] = useState(false);
@@ -388,6 +388,7 @@ const DataTabs = ({ activeTab, onTabChange, filteredInscriptions, formatTimestam
                 onClose={handleCloseModal}
                 inscription={selectedPlayer}
                 onSave={handleEditSave}
+                onDelete={onDelete}
             />
         </>
     );

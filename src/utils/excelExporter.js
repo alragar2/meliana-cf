@@ -111,6 +111,7 @@ export const prepareDataForExport = (filteredInscriptions, activeTab, calcularCa
     }
 };
 
+// Función para exportar datos a Excel agrupados por categoría
 export const exportToExcelByCategories = (groupedData, fileName = 'inscripciones_por_categoria') => {
     import('xlsx-js-style').then(XLSX => {
         const wb = XLSX.utils.book_new();
@@ -152,6 +153,7 @@ export const exportToExcelByCategories = (groupedData, fileName = 'inscripciones
     });
 };
 
+// Función para exportar toda la base de datos a Excel con formato específico
 export const exportDatabaseToExcel = (inscriptions, fileName = 'base_de_datos_meliana_cf') => {
     import('xlsx').then(XLSX => {
         const wb = XLSX.utils.book_new();

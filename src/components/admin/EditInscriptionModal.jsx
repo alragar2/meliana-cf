@@ -3,7 +3,7 @@ import { inscriptionService } from '../../firebase/inscriptionService';
 import FormField from '../site/FormField';
 import useInscriptionForm from '../../hooks/useInscriptionForm';
 
-const EditInscriptionModal = ({ isVisible, onClose, inscription, onSave }) => {
+const EditInscriptionModal = ({ isVisible, onClose, inscription, onSave, onDelete }) => {
 
     const {
         formData,
@@ -73,6 +73,38 @@ const EditInscriptionModal = ({ isVisible, onClose, inscription, onSave }) => {
         } catch (error) {
             console.error('Error al actualizar inscripción:', error);
             alert('Error inesperado al actualizar la inscripción. Por favor, inténtalo de nuevo.');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const handleDelete = async () => {
+        if (!inscription?.id) {
+            alert('Error: No se encontró el ID de la inscripción.');
+            return;
+        }
+
+        const confirmation = window.confirm(
+            `¿Estás seguro de que quieres eliminar a ${inscription.nombreNino} ${inscription.apellidos}? Esta acción no se puede deshacer.`
+        );
+        if (!confirmation) return;
+
+        setIsSubmitting(true);
+
+        try {
+            const result = onDelete
+                ? await onDelete(inscription.id)
+                : await inscriptionService.deleteInscription(inscription.id);
+
+            if (result.success) {
+                alert('Inscripción eliminada correctamente.');
+                onClose();
+            } else {
+                alert('Error al eliminar: ' + (result.error || result.message));
+            }
+        } catch (error) {
+            console.error('Error al eliminar inscripción:', error);
+            alert('Error inesperado al eliminar la inscripción. Por favor, inténtalo de nuevo.');
         } finally {
             setIsSubmitting(false);
         }
@@ -363,23 +395,42 @@ const EditInscriptionModal = ({ isVisible, onClose, inscription, onSave }) => {
                         </div>
                     </div>
 
-                    <div className="form-actions">
-                        <button
-                            type="submit"
-                            className="btn-submit"
-                            disabled={isSubmitting}
-                        >
-                            <i className={isSubmitting ? "fas fa-spinner fa-spin" : "fas fa-save"}></i>
-                            {isSubmitting ? 'Guardando...' : 'Guardar Cambios'}
-                        </button>
+                    <div className="form-actions" style={{ display: 'flex', justifyContent: 'space-between', gap: '0.75rem', flexWrap: 'wrap' }}>
+                        <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+                            <button
+                                type="submit"
+                                className="btn-submit"
+                                disabled={isSubmitting}
+                            >
+                                <i className={isSubmitting ? "fas fa-spinner fa-spin" : "fas fa-save"}></i>
+                                {isSubmitting ? 'Guardando...' : 'Guardar Cambios'}
+                            </button>
+                            <button
+                                type="button"
+                                onClick={onClose}
+                                className="btn-cancel"
+                                disabled={isSubmitting}
+                            >
+                                <i className="fas fa-times"></i>
+                                Cancelar
+                            </button>
+                        </div>
                         <button
                             type="button"
-                            onClick={onClose}
-                            className="btn-cancel"
+                            onClick={handleDelete}
                             disabled={isSubmitting}
+                            style={{
+                                backgroundColor: '#d32f2f',
+                                color: '#fff',
+                                border: 'none',
+                                padding: '0.75rem 1rem',
+                                borderRadius: '8px',
+                                cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                                minWidth: '150px'
+                            }}
                         >
-                            <i className="fas fa-times"></i>
-                            Cancelar
+                            <i className="fas fa-trash"></i>
+                            Eliminar Jugador
                         </button>
                     </div>
                 </form>

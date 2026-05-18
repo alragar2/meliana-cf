@@ -29,7 +29,7 @@ const Registration = () => {
       <div className="container">
         <h2 className="section-title">¡Inscríbete Ya!</h2>
         <div className="registration-content">
-          <p>Aprovecha tu oportunidad y completa el formulario para formar parte de nuestro club.</p>
+          <p>Aprovecha tu oportunidad y completa el formulario para formar parte de nuestro club. Para formalizar la inscripción como jugador/a del Meliana C.F, la inscripción deberá ser rellenada antes del 01 de JULIO</p>
           <button 
             onClick={handleRegistrationClick} 
             className="btn-registration"

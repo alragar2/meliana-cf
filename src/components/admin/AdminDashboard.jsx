@@ -8,7 +8,7 @@ import { handleExportExcel, handleExportDB } from './DataTabs';
 import { calcularCategoria } from '../../utils/categories';
 
 const AdminDashboard = ({ user, onLogout }) => {
-    const { inscriptions, loading, error, loadInscriptions, filterByDateRange, getPoblaciones } = useInscriptions(true);
+    const { inscriptions, loading, error, loadInscriptions, filterByDateRange, getPoblaciones, deleteInscription } = useInscriptions(true);
     
     const [activeTab, setActiveTab] = useState('player');
     const [searchTerm, setSearchTerm] = useState('');
@@ -240,6 +240,7 @@ const AdminDashboard = ({ user, onLogout }) => {
                                 filteredInscriptions={filteredInscriptions}
                                 formatTimestamp={formatTimestamp}
                                 calcularCategoria={calcularCategoria}
+                                onDelete={deleteInscription}
                             />
                         </div>
                     </div>
