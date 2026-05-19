@@ -166,7 +166,7 @@ const DataTabs = ({ activeTab, onTabChange, filteredInscriptions, formatTimestam
                                                 fontSize: '0.85rem',
                                                 fontWeight: '500'
                                             }}>
-                                                {inscription.categoria || calcularCategoria(inscription.fechaNacimiento)}
+                                                {inscription.categoria || calcularCategoria(inscription.fechaNacimiento, inscription.sexo)}
                                             </span>
                                         </td>
                                         <td style={{ padding: '12px 8px' }}>{inscription.totalAPagar}€</td>
