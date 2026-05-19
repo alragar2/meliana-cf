@@ -44,7 +44,7 @@ export const prepareDataForExport = (filteredInscriptions, activeTab, calcularCa
                 'Apellidos': inscription.apellidos,
                 'DNI': inscription.dni,
                 'Fecha Nacimiento': inscription.fechaNacimiento,
-                'Categoría': inscription.categoria || calcularCategoria(inscription.fechaNacimiento),
+                'Categoría': inscription.categoria || calcularCategoria(inscription.fechaNacimiento, inscription.sexo),
                 'Fecha Inscripción': formatTimestamp(inscription.createdAt)
             }));
 
@@ -74,7 +74,7 @@ export const prepareDataForExport = (filteredInscriptions, activeTab, calcularCa
                 'Apellidos': inscription.apellidos,
                 'DNI': inscription.dni,
                 'Fecha Nacimiento': inscription.fechaNacimiento,
-                'Categoría': calcularCategoria(inscription.fechaNacimiento),
+                'Categoría': calcularCategoria(inscription.fechaNacimiento, inscription.sexo),
                 'Fecha Inscripción': formatTimestamp(inscription.createdAt)
             }));
         case 'complete':
@@ -84,7 +84,7 @@ export const prepareDataForExport = (filteredInscriptions, activeTab, calcularCa
                 'Apellidos': inscription.apellidos,
                 'DNI': inscription.dni,
                 'Fecha Nacimiento': inscription.fechaNacimiento,
-                'Categoría': inscription.categoria || calcularCategoria(inscription.fechaNacimiento),
+                'Categoría': inscription.categoria || calcularCategoria(inscription.fechaNacimiento, inscription.sexo),
                 'Dirección': inscription.direccion,
                 'Población': inscription.poblacion,
                 'CP': inscription.cp,

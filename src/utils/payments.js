@@ -43,6 +43,8 @@ export const calculatePagosTotales = (categoria, loteria, hermanosEnClub, sexo) 
             pago = 470;
             break;
         case 'FEMENINO INFANTIL':
+        case 'FEMENINO ALEVÍN':
+        case 'FEMENINO CADETE':
             pago = 435;
             break;
         default:
@@ -105,6 +107,7 @@ export const calculatePaymentBreakdown = (categoria, hermanosEnClub = false, sex
             break;
         case 'FEMENINO INFANTIL':
         case 'FEMENINO ALEVÍN':
+        case 'FEMENINO CADETE':
             inscripcion = 120;
             cuotaMensual = 35;
             numCuotas = 9;

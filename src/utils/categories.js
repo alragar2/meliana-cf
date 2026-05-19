@@ -12,6 +12,7 @@ export const calcularCategoria = (fechaNacimiento, sexo) => {
         if (year === 2015) return 'ALEVÍN 2 AÑO';
         if ((year === 2013 || year === 2014) && sexo === 'femenino') return 'FEMENINO INFANTIL';
         if (year === 2014 || year === 2013) return 'INFANTIL';
+        if ((year === 2012 || year === 2011) && sexo === 'femenino') return 'FEMENINO CADETE';
         if (year === 2012 || year === 2011) return 'CADETE';
         if (year >= 2008 && year <= 2010) return 'JUVENIL';
 
