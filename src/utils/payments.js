@@ -72,7 +72,7 @@ export const calculatePaymentBreakdown = (categoria, hermanosEnClub = false, sex
         'septiembre',
         'octubre',
         'noviembre',
-        'diciembre',
+        'enero',
         'febrero',
         'marzo',
         'abril',
@@ -83,7 +83,7 @@ export const calculatePaymentBreakdown = (categoria, hermanosEnClub = false, sex
         'septiembre',
         'octubre',
         'noviembre',
-        'diciembre',
+        'enero',
         'febrero',
         'marzo',
         'abril',
@@ -135,13 +135,12 @@ export const calculatePaymentBreakdown = (categoria, hermanosEnClub = false, sex
             mesesAPagar = [];
     }
 
-    if (sexo === 'femenino') {
+    if (sexo === 'femenino' && categoria !== 'QUERUBÍN') {
         inscripcion = 120;
-            cuotaMensual = 35;
-            numCuotas = 9;
-            mesesAPagar = mesesFemeninoPlusQuerubin;
+        cuotaMensual = 35;
+        numCuotas = 9;
+        mesesAPagar = mesesFemeninoPlusQuerubin;
     }
-
 
     // Aplicar descuento si tiene hermanos en el club (no aplica a QUERUBÍN o AMATEUR)
     let inscripcionFinal = inscripcion;

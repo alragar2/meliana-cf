@@ -22,14 +22,19 @@ const ConfirmationPage = ({ onConfirm, inscriptionData }) => {
             if (categoria !== 'AMATEUR') {
                 // Determinar el nombre base del PDF
                 let pdfBase = 'INSCRIPCIÓN';
-                if (categoria === 'FEMENINO INFANTIL' || categoria === 'FEMENINO ALEVÍN') pdfBase = 'INSCRIPCIÓN_FEMENINO';
-                else if (categoria === 'QUERUBÍN') pdfBase = 'INSCRIPCIÓN_QUERUBINES';
-                else if (categoria === 'JUVENIL' && inscriptionData.sexo === 'masculino') pdfBase = 'INSCRIPCIÓN_JUVENILES';
+                if (categoria === 'QUERUBÍN') {
+                    pdfBase = 'INSCRIPCIÓN_QUERUBINES';
+                } else if (inscriptionData.sexo === 'femenino') {
+                    pdfBase = 'INSCRIPCIÓN_FEMENINO';
+                } else if (categoria === 'JUVENIL' && inscriptionData.sexo === 'masculino') {
+                    pdfBase = 'INSCRIPCIÓN_JUVENILES';
+                }
 
                 // Determinar sufijos para hermanos y lotería
-                const h = inscriptionData.hermanosEnClub ? 'CON' : 'SIN';
                 const l = inscriptionData.loteria ? 'CON' : 'SIN';
-                const pdfName = `${pdfBase}_${h}_H_${l}_L`;
+                const pdfName = categoria === 'QUERUBÍN'
+                    ? `${pdfBase}_${l}_L`
+                    : `${pdfBase}_${inscriptionData.hermanosEnClub ? 'CON' : 'SIN'}_H_${l}_L`;
 
                 // Descargar el PDF
                 const pdfUrl = `/PDFs/${pdfName}.pdf`;
