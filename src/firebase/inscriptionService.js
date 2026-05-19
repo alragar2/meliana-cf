@@ -1,4 +1,4 @@
-import { collection, addDoc, getDocs, doc, setDoc, updateDoc, deleteDoc, Timestamp } from 'firebase/firestore';
+import { collection, addDoc, getDocs, doc, setDoc, updateDoc, deleteDoc, Timestamp, runTransaction } from 'firebase/firestore';
 import { db } from './config';
 import { 
   COLLECTION_NAME, 
@@ -55,32 +55,46 @@ export const inscriptionService = {
         throw new Error('Base de datos Firestore no inicializada');
       }
 
-      // Obtener el número de inscripciones actuales para generar el ID
-      const allInscriptions = await getDocs(collection(db, COLLECTION_NAME));
-      const nextNumber = allInscriptions.size + 1;
-      const customId = `MCF-2026-${nextNumber}`;
+      // Generar un documento único para la inscripción y un número correlativo seguro para el campo customId
+      const docRef = doc(collection(db, COLLECTION_NAME));
+      const counterRef = doc(db, 'counters', 'inscripciones');
+      let customId;
 
-      const dataToSave = createInscriptionDataModel(inscriptionData, customId);
+      const result = await runTransaction(db, async (transaction) => {
+        const counterSnap = await transaction.get(counterRef);
+        let nextNumber = 1;
 
-      // Calcular categoría y pagos totales
-      const categoria = calcularCategoria(inscriptionData.fechaNacimiento, inscriptionData.sexo);
-      dataToSave.categoria = categoria;
-      dataToSave.totalAPagar = calculatePagosTotales(categoria, dataToSave.loteria, dataToSave.hermanosEnClub, dataToSave.sexo);
+        if (!counterSnap.exists()) {
+          transaction.set(counterRef, { lastNumber: nextNumber });
+        } else {
+          const lastNumber = counterSnap.data()?.lastNumber || 0;
+          nextNumber = lastNumber + 1;
+          transaction.update(counterRef, { lastNumber: nextNumber });
+        }
 
-      console.log('📝 [Firebase Service] Datos finales a guardar:', dataToSave);
-      console.log('✍️ [Firebase Service] Enviando a Firestore...');
+        customId = `MCF-2026-${nextNumber}`;
+        const dataToSave = createInscriptionDataModel(inscriptionData, customId);
 
-      // Intentar crear la colección y documento
-      const docRef = doc(db, COLLECTION_NAME, customId);
-      
-      await setDoc(docRef, dataToSave);
-      
-      console.log('✅ [Firebase Service] Inscripción guardada con ID:', docRef.id);
-      console.log('✅ [Firebase Service] Código de inscripción personalizado:', customId);
+        // Calcular categoría y pagos totales
+        const categoria = calcularCategoria(inscriptionData.fechaNacimiento, inscriptionData.sexo);
+        dataToSave.categoria = categoria;
+        dataToSave.totalAPagar = calculatePagosTotales(categoria, dataToSave.loteria, dataToSave.hermanosEnClub, dataToSave.sexo);
+
+        console.log('📝 [Firebase Service] Datos finales a guardar:', dataToSave);
+        transaction.set(docRef, dataToSave);
+
+        return {
+          id: docRef.id,
+          codigoInscripcion: customId
+        };
+      });
+
+      console.log('✅ [Firebase Service] Inscripción guardada con ID:', result.id);
+      console.log('✅ [Firebase Service] Código de inscripción personalizado:', result.codigoInscripcion);
       return {
         success: true,
-        id: docRef.id,
-        codigoInscripcion: customId,
+        id: result.id,
+        codigoInscripcion: result.codigoInscripcion,
         message: 'Inscripción enviada correctamente'
       };
     } catch (error) {
