@@ -71,7 +71,6 @@ export const REQUIRED_INSCRIPTION_FIELDS = [
   'apellidos', 
   'direccion',
   'poblacion',
-  'dni',
   'cp',
   'fechaNacimiento',
   'telefono',

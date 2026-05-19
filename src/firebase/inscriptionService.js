@@ -429,12 +429,24 @@ export const inscriptionService = {
       }
     }
 
-    // Validar DNI/NIE del niño
-    if (!VALIDATION_PATTERNS.dni.test(data.dni.replace(/[-\s]/g, ''))) {
+    // No permitimos inscripciones femeninas nacidas antes de 2011 porque no hay equipos disponibles
+    const birthYear = data.fechaNacimiento ? parseInt(data.fechaNacimiento.substring(0, 4), 10) : null;
+    if (data.sexo === 'femenino' && birthYear && birthYear < 2011) {
       return {
         isValid: false,
-        message: 'El formato del DNI/NIE del niño no es válido'
+        message: 'Lo sentimos, no disponemos de equipo femenino para nacidas antes de 2011.'
       };
+    }
+
+    // Validar DNI/NIE del niño si está informado
+    if (data.dni && data.dni.trim() !== '') {
+      const childDni = data.dni.replace(/[-\s]/g, '');
+      if (!VALIDATION_PATTERNS.dni.test(childDni)) {
+        return {
+          isValid: false,
+          message: 'El formato del DNI/NIE del niño no es válido'
+        };
+      }
     }
 
     if (!adult) {

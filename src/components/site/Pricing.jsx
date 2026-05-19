@@ -2,63 +2,41 @@ import React from 'react';
 
 const Pricing = () => {
   const pricingPlans = [
+    
     {
       id: 1,
-      name: "Individual",
-      price: 25,
+      name: "Precio Escuela",
+      price: 520,
       currency: "€",
-      period: "/sesión",
       popular: false,
-      features: [
-        "1 sesión de entrenamiento",
-        "Asesoramiento personalizado",
-      ],
-      buttonText: "Seleccionar",
+      buttonText: "Inscribirse",
       buttonLink: "#inscripcion"
     },
     {
       id: 2,
-      name: "Pareja",
-      price: 20,
+      name: "Femenino",
+      price: 435,
       currency: "€",
-      period: "/sesión",
       popular: false,
-      features: [
-        "1 sesión de entrenamiento",
-        "Asesoramiento personalizado",
-        "20€ por persona"
-      ],
-      buttonText: "Seleccionar",
+      buttonText: "Inscribirse",
       buttonLink: "#inscripcion"
     },
     {
       id: 3,
-      name: "Trío",
-      price: 15,
+      name: "Juvenil Masculino",
+      price: 470,
       currency: "€",
-      period: "/sesión",
       popular: false,
-      features: [
-        "1 sesión de entrenamiento",
-        "Asesoramiento personalizado",
-        "15€ por persona"
-      ],
-      buttonText: "Seleccionar",
+      buttonText: "Inscribirse",
       buttonLink: "#inscripcion"
     },
     {
       id: 4,
-      name: "Grupal Mensual",
-      price: 40,
+      name: "Querubín",
+      price: 225,
       currency: "€",
-      cloth: "(+25€ inscripción)",
-      period: "/mes",
       popular: false,
-      features: [
-        "Sesiones de entrenamiento grupales",
-        "Asesoramiento personalizado"
-      ],
-      buttonText: "Seleccionar",
+      buttonText: "Inscribirse",
       buttonLink: "#inscripcion"
     }
   ];
@@ -66,7 +44,7 @@ const Pricing = () => {
   return (
     <section id="pricing" className="pricing section">
       <div className="container">
-        <h2 className="text-center mb-12">Nuestros Precios</h2>
+        <h2 className="text-center mb-6">Precios de la Escuela</h2>
         <div className="pricing-grid">
           {pricingPlans.map((plan) => (
             <div 
@@ -85,14 +63,6 @@ const Pricing = () => {
                 <span>{plan.period}</span>
               </div>
               {plan.cloth && <span className="cloth">{plan.cloth}</span>}
-              <ul>
-                {plan.features.map((feature, index) => (
-                  <li key={index}>
-                    <i className="fas fa-check"></i>
-                    {feature}
-                  </li>
-                ))}
-              </ul>
               <a href={plan.buttonLink} className="btn btn-primary">
                 {plan.buttonText}
               </a>
@@ -100,29 +70,18 @@ const Pricing = () => {
           ))}
         </div>
         
-        {/* Sección de Descuentos */}
         <div className="pricing-discount">
           <div className="discount-card">
             <div className="discount-header">
-              <i className="fas fa-percentage"></i>
-              <h3>Descuento Especial</h3>
+              <i className="fas fa-bolt"></i>
+              <h3>Inscríbete y descubre tu precio exacto</h3>
             </div>
             <div className="discount-content">
               <p>
-                <strong>¡5€ de descuento!</strong> para jugadores de:
+                Estos son nuestros precios de referencia, pero al inscribirte podrás obtener el importe exacto según tu categoría y condiciones.
               </p>
-              <div className="clubs-list">
-                <div className="club-item">
-                  <img src="/images/melianacf.jpg" alt="Meliana CF" className="fas fa-shield-alt" width={25} />
-                  <span>Meliana CF</span>
-                </div>
-                <div className="club-item">
-                  <img src="/images/albuixech.jpg" alt="Albuixech CF" className="fas fa-shield-alt" width={25} />
-                  <span>Albuixech CF</span>
-                </div>
-              </div>
               <p className="discount-note">
-                * Aplica a todos los planes. Presenta tu carnet de jugador.
+                <strong>¡No esperes más!</strong> Queremos ayudarte a conocer lo que vas a pagar con total claridad.
               </p>
             </div>
           </div>

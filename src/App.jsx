@@ -27,6 +27,7 @@ const HomePage = () => (
     <Header />
     <Hero />
     <JornadasAbiertas />
+    <Pricing />
     <Inscription />
     <Gallery />
     <About />

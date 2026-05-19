@@ -4,6 +4,15 @@
   background-color: var(--gray-50);
 }
 
+.pricing-intro {
+  max-width: 780px;
+  margin: 0 auto;
+  color: var(--text-gray);
+  font-size: var(--font-size-lg);
+  line-height: 1.7;
+  margin-bottom: var(--spacing-xl);
+}
+
 .pricing-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -106,12 +115,14 @@
   margin-top: var(--spacing-lg);
   padding: var(--spacing-md) var(--spacing-lg);
   font-weight: 600;
+  justify-content: center;
 }
 
 .pricing-card.popular .btn {
   background: linear-gradient(135deg, var(--accent-gold), #c99a2e);
   color: var(--dark-bg);
   border: none;
+  justify-content: center;
 }
 
 .pricing-card.popular .btn:hover {

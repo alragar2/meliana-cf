@@ -74,6 +74,16 @@ const ConfirmationPage = ({ onConfirm, inscriptionData }) => {
                 </div>
 
                 <div className="form-section">
+                    <h4><i className="fas fa-undo"></i> Devolución de Recibos</h4>
+                    <p>En el supuesto de devolución de algún recibo domiciliado, se autoriza al club a incrementar el importe de 5,00€ en próximas remesas como gastos ocasionados por gestión bancaria.</p>
+                </div>
+
+                <div className="form-section">
+                    <h4><i className="fas fa-undo"></i> Ropa perdida o extraviada</h4>
+                    <p>Recordamos que los jugadores que hayan perdido o extraviado su equipación deportiva deberán reponerla a su costa.</p>
+                </div>
+
+                <div className="form-section">
                     <h4><i className="fas fa-file-contract"></i> Admisión en la Escuela</h4>
                     <p>Para ser admitido en la Escuela de Fútbol, el jugador deberá estar al corriente de pago en cuotas y lotería de campañas anteriores</p>
                 </div>
