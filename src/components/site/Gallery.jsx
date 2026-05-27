@@ -33,6 +33,11 @@ const Gallery = () => {
       image: "/images/gallery_regate.jpg",
       title: "Regate en Acción",
       alt: "Regate en Acción"
+    },
+    {
+      image: "/images/foto-amateur.jpeg",
+      title: "Amateur",
+      alt: "Amateur"
     }
   ];
 
