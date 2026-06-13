@@ -438,13 +438,13 @@ export const inscriptionService = {
       };
     }
 
-    // Validar DNI/NIE del niño si está informado
+    // Validar DNI/NIE/Pasaporte del niño si está informado
     if (data.dni && data.dni.trim() !== '') {
       const childDni = data.dni.replace(/[-\s]/g, '');
       if (!VALIDATION_PATTERNS.dni.test(childDni)) {
         return {
           isValid: false,
-          message: 'El formato del DNI/NIE del niño no es válido'
+          message: 'El formato del DNI/NIE/Pasaporte del niño no es válido'
         };
       }
     }
@@ -454,7 +454,7 @@ export const inscriptionService = {
       if (!VALIDATION_PATTERNS.dni.test(parentDni)) {
         return {
           isValid: false,
-          message: 'El formato del DNI/NIE del padre no es válido'
+          message: 'El formato del DNI/NIE/Pasaporte del padre no es válido'
         };
       }
     }

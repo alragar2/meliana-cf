@@ -168,7 +168,7 @@ const EditInscriptionModal = ({ isVisible, onClose, inscription, onSave, onDelet
 
                         <div className="form-row">
                             <FormField
-                                label="DNI/NIE *"
+                                label="DNI/NIE/Pasaporte *"
                                 name="dni"
                                 formData={formData}
                                 touchedFields={touchedFields}
@@ -340,7 +340,7 @@ const EditInscriptionModal = ({ isVisible, onClose, inscription, onSave, onDelet
 
                         <div className="form-row">
                             <FormField
-                                label="DNI/NIE *"
+                                label="DNI/NIE/Pasaporte *"
                                 name="dniPadre"
                                 formData={formData}
                                 touchedFields={touchedFields}

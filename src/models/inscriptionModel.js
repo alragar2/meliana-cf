@@ -93,7 +93,7 @@ export const REQUIRED_INSCRIPTION_FIELDS = [
 export const VALIDATION_PATTERNS = {
   phone: /^[+]?[0-9\s-()]{9,15}$/,
   email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-  dni: /^[0-9XYZ]{1}[0-9]{7}[A-Z]{1}$/i,
+  dni: /^([0-9XYZ][0-9]{7}[A-Z]|[A-Z0-9]{6,20})$/i,
   iban: /^[A-Z]{2}[0-9]{2}[A-Z0-9]{1,30}$/,
   postalCode: /^\d{5}$/
 };

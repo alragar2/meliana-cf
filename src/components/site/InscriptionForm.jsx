@@ -146,7 +146,7 @@ const InscriptionForm = ({ isVisible, onClose, onSuccess }) => {
 
                     <div className="form-row">
                         <FormField
-                            label="DNI/NIE (opcional)"
+                            label="DNI/NIE/Pasaporte (opcional)"
                             name="dni"
                             type="text"
                             formData={formData}
@@ -329,7 +329,7 @@ const InscriptionForm = ({ isVisible, onClose, onSuccess }) => {
 
                         <div className="form-row">
                             <FormField
-                                label="DNI/NIE *"
+                                label="DNI/NIE/Pasaporte *"
                                 name="dniPadre"
                                 type="text"
                                 formData={formData}
