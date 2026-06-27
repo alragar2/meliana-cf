@@ -1,4 +1,5 @@
 import { obtenerCategoriaValida } from './categories';
+import { INITIAL_POSTAL_CODES_CACHE, getResolvedPopulation } from './postalCodes';
 
 // Utilidad para exportar datos a Excel
 export const exportToExcel = (data, fileName = 'exportacion') => {
@@ -88,7 +89,7 @@ export const prepareDataForExport = (filteredInscriptions, activeTab, calcularCa
                 'Fecha Nacimiento': inscription.fechaNacimiento,
                 'Categoría': obtenerCategoriaValida(inscription),
                 'Dirección': inscription.direccion,
-                'Población': inscription.poblacion,
+                'Población': getResolvedPopulation(inscription, INITIAL_POSTAL_CODES_CACHE),
                 'CP': inscription.cp,
                 'Teléfono': inscription.telefono,
                 'Nacionalidad': inscription.nacionalidad,
@@ -169,7 +170,7 @@ export const exportDatabaseToExcel = (inscriptions, fileName = 'base_de_datos_me
             'Fecha Nacimiento': inscription.fechaNacimiento,
             'Categoría': obtenerCategoriaValida(inscription),
             'Dirección': inscription.direccion,
-            'Población': inscription.poblacion,
+            'Población': getResolvedPopulation(inscription, INITIAL_POSTAL_CODES_CACHE),
             'CP': inscription.cp,
             'Teléfono': inscription.telefono,
             'Nacionalidad': inscription.nacionalidad,

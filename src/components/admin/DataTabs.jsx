@@ -4,6 +4,7 @@ import { savePaymentToFirestore } from '../../firebase/modify-db';
 import EditInscriptionModal from './EditInscriptionModal';
 import '../../css/dataTabs.css';
 import { obtenerCategoriaValida } from '../../utils/categories';
+import { getResolvedPopulation } from '../../utils/postalCodes';
 
 export const handleExportExcel = (filteredInscriptions, activeTab, calcularCategoria, formatTimestamp) => {
     if (filteredInscriptions.length === 0) {
@@ -37,7 +38,7 @@ export const handleExportDB = (inscriptions) => {
     exportDatabaseToExcel(inscriptions, `base_de_datos_meliana_cf_2026_2027`);
 };
 
-const DataTabs = ({ activeTab, onTabChange, filteredInscriptions, formatTimestamp, calcularCategoria, onDelete }) => {
+const DataTabs = ({ activeTab, onTabChange, filteredInscriptions, formatTimestamp, calcularCategoria, postalCodesCache = {}, onDelete }) => {
 
     const [localInscriptions, setLocalInscriptions] = useState(filteredInscriptions);
     const [editModalOpen, setEditModalOpen] = useState(false);
@@ -286,7 +287,7 @@ const DataTabs = ({ activeTab, onTabChange, filteredInscriptions, formatTimestam
                                     <tr key={inscription.id} style={{ borderBottom: '1px solid #ddd' }}>
                                         <td style={{ padding: '12px 8px' }}>{inscription.codigoInscripcion}</td>
                                         <td style={{ padding: '12px 8px' }}>{inscription.nombreNino} {inscription.apellidos}</td>
-                                        <td style={{ padding: '12px 8px' }}>{inscription.poblacion}</td>
+                                        <td style={{ padding: '12px 8px' }}>{getResolvedPopulation(inscription, postalCodesCache)}</td>
                                         <td style={{ padding: '12px 8px' }}>{inscription.dni}</td>
                                         <td style={{ padding: '12px 8px' }}>{inscription.cp}</td>
                                         <td style={{ padding: '12px 8px' }}>{inscription.fechaNacimiento}</td>

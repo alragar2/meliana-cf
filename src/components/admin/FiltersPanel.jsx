@@ -5,6 +5,8 @@ const FiltersPanel = ({
     showFilters, 
     filters, 
     inscriptions, 
+    postalCodesCache = {}, 
+    getResolvedPopulation, 
     onFilterChange, 
     onClearFilters, 
     onToggleFilters 
@@ -29,7 +31,11 @@ const FiltersPanel = ({
 
     // Obtener poblaciones únicas
     const getUniqueLocations = () => {
-        const locations = inscriptions.map(inscription => inscription.poblacion);
+        if (!getResolvedPopulation) {
+            const locations = inscriptions.map(inscription => inscription.poblacion);
+            return [...new Set(locations)].filter(Boolean).sort();
+        }
+        const locations = inscriptions.map(inscription => getResolvedPopulation(inscription, postalCodesCache));
         return [...new Set(locations)].filter(Boolean).sort();
     };
 

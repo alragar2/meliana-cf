@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { authService } from '../../firebase/authService';
 import useInscriptions from '../../hooks/useInscriptions';
 import FiltersPanel from './FiltersPanel';
@@ -6,6 +6,7 @@ import DataTabs from './DataTabs';
 import '../../css/admin-dashboard.css';
 import { handleExportExcel, handleExportDB } from './DataTabs'; 
 import { calcularCategoria, obtenerCategoriaValida } from '../../utils/categories';
+import { INITIAL_POSTAL_CODES_CACHE, fetchUnknownPostalCodes, getResolvedPopulation } from '../../utils/postalCodes';
 
 const AdminDashboard = ({ user, onLogout }) => {
     const { inscriptions, loading, error, loadInscriptions, filterByDateRange, getPoblaciones, deleteInscription } = useInscriptions(true);
@@ -13,6 +14,18 @@ const AdminDashboard = ({ user, onLogout }) => {
     const [activeTab, setActiveTab] = useState('player');
     const [searchTerm, setSearchTerm] = useState('');
     const [showFilters, setShowFilters] = useState(false);
+    const [postalCodesCache, setPostalCodesCache] = useState(INITIAL_POSTAL_CODES_CACHE);
+
+    useEffect(() => {
+        if (inscriptions && inscriptions.length > 0) {
+            const cps = inscriptions.map(ins => ins.cp).filter(Boolean);
+            fetchUnknownPostalCodes(cps, postalCodesCache).then(newEntries => {
+                if (Object.keys(newEntries).length > 0) {
+                    setPostalCodesCache(prev => ({ ...prev, ...newEntries }));
+                }
+            });
+        }
+    }, [inscriptions]);
     const [filters, setFilters] = useState({
         sortBy: 'newest',
         categoria: '',
@@ -53,7 +66,8 @@ const AdminDashboard = ({ user, onLogout }) => {
         const matchesEstado = !filters.estado || inscription.estado === filters.estado;
 
         // Filtro por población
-        const matchesPoblacion = !filters.poblacion || inscription.poblacion === filters.poblacion;
+        const resolvedPoblacion = getResolvedPopulation(inscription, postalCodesCache);
+        const matchesPoblacion = !filters.poblacion || resolvedPoblacion === filters.poblacion;
 
         // Filtro por fecha desde
         let matchesFechaDesde = true;
@@ -180,7 +194,8 @@ const AdminDashboard = ({ user, onLogout }) => {
                         showFilters={showFilters}
                         filters={filters}
                         inscriptions={inscriptions}
-                        poblaciones={getPoblaciones()}
+                        postalCodesCache={postalCodesCache}
+                        getResolvedPopulation={getResolvedPopulation}
                         onFilterChange={handleFilterChange}
                         onClearFilters={clearFilters}
                         onToggleFilters={toggleFilters}
@@ -240,6 +255,7 @@ const AdminDashboard = ({ user, onLogout }) => {
                                 filteredInscriptions={filteredInscriptions}
                                 formatTimestamp={formatTimestamp}
                                 calcularCategoria={calcularCategoria}
+                                postalCodesCache={postalCodesCache}
                                 onDelete={deleteInscription}
                             />
                         </div>
