@@ -3,6 +3,7 @@ import { exportToExcel, prepareDataForExport, exportToExcelByCategories, exportD
 import { savePaymentToFirestore } from '../../firebase/modify-db';
 import EditInscriptionModal from './EditInscriptionModal';
 import '../../css/dataTabs.css';
+import { obtenerCategoriaValida } from '../../utils/categories';
 
 export const handleExportExcel = (filteredInscriptions, activeTab, calcularCategoria, formatTimestamp) => {
     if (filteredInscriptions.length === 0) {
@@ -166,7 +167,7 @@ const DataTabs = ({ activeTab, onTabChange, filteredInscriptions, formatTimestam
                                                 fontSize: '0.85rem',
                                                 fontWeight: '500'
                                             }}>
-                                                {inscription.categoria || calcularCategoria(inscription.fechaNacimiento, inscription.sexo)}
+                                                {obtenerCategoriaValida(inscription)}
                                             </span>
                                         </td>
                                         <td style={{ padding: '12px 8px' }}>{inscription.totalAPagar}€</td>

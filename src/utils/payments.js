@@ -31,6 +31,8 @@ export const calculatePagosTotales = (categoria, loteria, hermanosEnClub, sexo) 
             pago = 225;
             break;
         case 'PREBE':
+        case 'PREBENJAMÍN 1 AÑO':
+        case 'PREBENJAMÍN 2 AÑO':
         case 'BENJAMÍN 1 AÑO':
         case 'BENJAMÍN 2 AÑO':
         case 'ALEVÍN 1 AÑO':
@@ -120,6 +122,8 @@ export const calculatePaymentBreakdown = (categoria, hermanosEnClub = false, sex
             mesesAPagar = meses.slice(0, 7);
             break;
         case 'PREBE':
+        case 'PREBENJAMÍN 1 AÑO':
+        case 'PREBENJAMÍN 2 AÑO':
         case 'BENJAMÍN 1 AÑO':
         case 'BENJAMÍN 2 AÑO':
         case 'ALEVÍN 1 AÑO':

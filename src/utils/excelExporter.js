@@ -1,3 +1,5 @@
+import { obtenerCategoriaValida } from './categories';
+
 // Utilidad para exportar datos a Excel
 export const exportToExcel = (data, fileName = 'exportacion') => {
     // Importar dinámicamente xlsx cuando sea necesario
@@ -44,7 +46,7 @@ export const prepareDataForExport = (filteredInscriptions, activeTab, calcularCa
                 'Apellidos': inscription.apellidos,
                 'DNI': inscription.dni,
                 'Fecha Nacimiento': inscription.fechaNacimiento,
-                'Categoría': inscription.categoria || calcularCategoria(inscription.fechaNacimiento, inscription.sexo),
+                'Categoría': obtenerCategoriaValida(inscription),
                 'Fecha Inscripción': formatTimestamp(inscription.createdAt)
             }));
 
@@ -84,7 +86,7 @@ export const prepareDataForExport = (filteredInscriptions, activeTab, calcularCa
                 'Apellidos': inscription.apellidos,
                 'DNI': inscription.dni,
                 'Fecha Nacimiento': inscription.fechaNacimiento,
-                'Categoría': inscription.categoria || calcularCategoria(inscription.fechaNacimiento, inscription.sexo),
+                'Categoría': obtenerCategoriaValida(inscription),
                 'Dirección': inscription.direccion,
                 'Población': inscription.poblacion,
                 'CP': inscription.cp,
@@ -165,7 +167,7 @@ export const exportDatabaseToExcel = (inscriptions, fileName = 'base_de_datos_me
             'Apellidos': inscription.apellidos,
             'DNI': inscription.dni,
             'Fecha Nacimiento': inscription.fechaNacimiento,
-            'Categoría': inscription.categoria,
+            'Categoría': obtenerCategoriaValida(inscription),
             'Dirección': inscription.direccion,
             'Población': inscription.poblacion,
             'CP': inscription.cp,
@@ -208,7 +210,7 @@ export const exportDatabaseToExcel = (inscriptions, fileName = 'base_de_datos_me
             const data = {
                 'ID': inscription.codigoInscripcion,
                 'NOMBRE': inscription.nombreNino + ' ' + inscription.apellidos,
-                'EQUIPO': inscription.categoria,
+                'EQUIPO': obtenerCategoriaValida(inscription),
                 'HERMANOS': inscription.hermanosEnClub ? 'Sí' : 'No',
                 'LOTERÍA': inscription.loteria ? 'Sí' : 'No',
                 'IBAN': inscription.banco?.iban || '-',
@@ -239,7 +241,7 @@ export const exportDatabaseToExcel = (inscriptions, fileName = 'base_de_datos_me
         //-- Hoja 3: Gastos ---
         const gastosData = inscriptions.map(inscription => {
             return {
-                'EQUIPO': inscription.categoria,
+                'EQUIPO': obtenerCategoriaValida(inscription),
                 'JUGADORES': " ",
                 'MUTUA': " ",
                 'TOTAL MUTUA': " ",

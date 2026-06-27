@@ -1,5 +1,5 @@
 import React from 'react';
-import { calcularCategoria } from '../../utils/categories';
+import { calcularCategoria, obtenerCategoriaValida } from '../../utils/categories';
 
 const FiltersPanel = ({ 
     showFilters, 
@@ -13,10 +13,7 @@ const FiltersPanel = ({
     const getUniqueCategories = () => {
         const categories = [];
         inscriptions.forEach(inscription => {
-            let category = inscription.categoria;
-            if (!category && inscription.fechaNacimiento) {
-                category = calcularCategoria(inscription.fechaNacimiento, inscription.sexo);
-            }
+            const category = obtenerCategoriaValida(inscription);
             if (category && !categories.includes(category)) {
                 categories.push(category);
             }

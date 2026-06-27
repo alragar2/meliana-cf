@@ -5,7 +5,7 @@ import FiltersPanel from './FiltersPanel';
 import DataTabs from './DataTabs';
 import '../../css/admin-dashboard.css';
 import { handleExportExcel, handleExportDB } from './DataTabs'; 
-import { calcularCategoria } from '../../utils/categories';
+import { calcularCategoria, obtenerCategoriaValida } from '../../utils/categories';
 
 const AdminDashboard = ({ user, onLogout }) => {
     const { inscriptions, loading, error, loadInscriptions, filterByDateRange, getPoblaciones, deleteInscription } = useInscriptions(true);
@@ -46,7 +46,7 @@ const AdminDashboard = ({ user, onLogout }) => {
             padreApellidos.toLowerCase().includes(searchTerm.toLowerCase());
 
         // Filtro por categoría
-        const inscriptionCategoria = inscription.categoria || calcularCategoria(inscription.fechaNacimiento, inscription.sexo);
+        const inscriptionCategoria = obtenerCategoriaValida(inscription);
         const matchesCategoria = !filters.categoria || inscriptionCategoria === filters.categoria;
 
         // Filtro por estado

@@ -4,7 +4,8 @@ export const calcularCategoria = (fechaNacimiento, sexo) => {
         if (isNaN(year)) return '-';
 
         if (year === 2021 || year === 2022) return 'QUERUBÍN';
-        if (year === 2020 || year === 2019) return 'PREBE';
+        if (year === 2020) return 'PREBENJAMÍN 1 AÑO';
+        if (year === 2019) return 'PREBENJAMÍN 2 AÑO';
         if (year === 2018) return 'BENJAMÍN 1 AÑO'; 
         if (year === 2017) return 'BENJAMÍN 2 AÑO';
         if ((year === 2015 || year === 2016) && sexo === 'femenino') return 'FEMENINO ALEVÍN';
@@ -18,3 +19,12 @@ export const calcularCategoria = (fechaNacimiento, sexo) => {
 
         return 'AMATEUR';
     };
+
+export const obtenerCategoriaValida = (inscription) => {
+    if (!inscription) return '-';
+    let cat = inscription.categoria;
+    if (!cat || cat === 'PREBE') {
+        cat = calcularCategoria(inscription.fechaNacimiento, inscription.sexo);
+    }
+    return cat;
+};
